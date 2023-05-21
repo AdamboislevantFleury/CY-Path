@@ -3,6 +3,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * 
+ * @author CY-Path Group 15
+ * @version 1.0
+ * 
+ * This is the <b>main function</b> of the CY-Path Projects. It initialize all the values for the Graph, Node, Pawn and Barrier classes.
+ *
+ */
+
 public class QuoridorBoard {
 	public static void main(String[] args) {
         // Create the graph representing the Quoridor board
@@ -36,11 +45,12 @@ public class QuoridorBoard {
         }
         
         graph.printGraph();
-        /*
+        
         //Create pawn for player 1
         
-        Node startPositionP1 = getNodeAt(graph, 4, 0);
-        List<Node> goalP1 = new ArrayList <Node> ();
+        Node startPositionP1 = getNodeAt(graph, 4, 0);//Initialize the start position
+        startPositionP1.isTaken=true;
+        List<Node> goalP1 = new ArrayList <Node> (); //Initialize the nodes of the graph where Player 4 wins
         for (int i=0; i<9; i++) {
         	goalP1.add(getNodeAt(graph,i,8));
         }
@@ -48,112 +58,83 @@ public class QuoridorBoard {
         
       //Create pawn for player 2
         
-        Node startPositionP2 = getNodeAt(graph,4 ,8);
+        Node startPositionP2 = getNodeAt(graph,4 ,1);
+        startPositionP2.isTaken=true;
         List<Node> goalP2 = new ArrayList <Node> ();
         for (int i=0; i<9; i++) {
         	goalP2.add(getNodeAt(graph,i,0));
         }
         Pawn pawnP2 = new Pawn(startPositionP2,goalP2);
         
-        int turn=0;
+        //Create pawn for player 3
+        
+        Node startPositionP3 = getNodeAt(graph,0 ,4);
+        startPositionP3.isTaken=true;
+        List<Node> goalP3 = new ArrayList <Node> ();
+        for (int i=0; i<9; i++) {
+        	goalP3.add(getNodeAt(graph,0,i));
+        }
+        Pawn pawnP3 = new Pawn(startPositionP3,goalP3);
+        
+        //Create pawn for player 4
+        
+        Node startPositionP4 = getNodeAt(graph,8 ,4); 
+        startPositionP4.isTaken=true;
+        List<Node> goalP4 = new ArrayList <Node> (); 
+        for (int i=0; i<9; i++) {
+        	goalP4.add(getNodeAt(graph,8,i));
+        }
+        Pawn pawnP4 = new Pawn(startPositionP4,goalP4);
+        
+        Scanner sc = new Scanner(System.in);
+        int nbPlayers; //Initialize number of players
+        do {
+        	System.out.println("Select number of players (2 or 4)"); //the user enter the number in the console
+        	nbPlayers= sc.nextInt();
+        }while(nbPlayers != 2 && nbPlayers != 4); // check if the user enter 2 or 4 players
+        
+        
+        int turn=1;
         int nbBarriers=0;
         
-        while(pawnP2.hasWon()==false && pawnP1.hasWon()==false) {
-        	if (turn%2 == 0) {
-        		System.out.println("Player 1's turn ! Turn:"+turn);
-        		int answer;
-        		if (nbBarriers<=20) {
-        			System.out.println("Move (1), Place wall (2)");
-            		Scanner sc = new Scanner(System.in);
-            		answer = sc.nextInt();
-        		}
-        		else {
-        			answer = 1;
-        		}
-        		switch (answer) {
-        		case 1:
-        			pawnP1.move(graph);
-        			break;
-        		case 2:
-        			createWall(graph);
-        			nbBarriers++;
-        			break;
-        		default:
-        			System.out.println("Incorrect value");
-        			break;
-        		}
-        		turn++;
+        while(pawnP2.hasWon()==false && pawnP1.hasWon()==false && pawnP3.hasWon()==false && pawnP4.hasWon()==false) { //Victory conditions
+        	if (turn > nbPlayers) {
+        		turn = 1; //if all players played, go back to player 1.
         	}
-        	else if (turn%2 !=0){
-        		System.out.println("Player 2's turn ! Turn:"+turn);
-        		System.out.println("Move (1), Place wall (2)");
-        		Scanner sc = new Scanner(System.in);
-        		int answer = sc.nextInt();
-        		switch (answer) {
-        		case 1:
-        			pawnP2.move(graph);
-        			break;
-        		case 2:
-        			createWall(graph);
-        			nbBarriers++;
-        			break;
-        		default:
-        			System.out.println("Incorrect value");
-        			break;
-        		}
+        	System.out.println("Player "+turn+"'s turn !");
+        	switch(turn) {
+        	case 1: //Player 1
+        		System.out.println("Current Position: "+pawnP1.getCurrentPosition().getX()+" , "+pawnP1.getCurrentPosition().getY()); //display position of the pawn
+        		pawnP1.play(nbBarriers, graph, goalP1); //see play method for more details
         		turn++;
+        		break;
+        	case 2: //Player 2
+        		System.out.println("Current Position: "+pawnP2.getCurrentPosition().getX()+" , "+pawnP2.getCurrentPosition().getY());
+        		pawnP2.play(nbBarriers, graph, goalP2);
+        		turn++;
+        		break;
+        	case 3: //Player 3
+        		System.out.println("Current Position: "+pawnP3.getCurrentPosition().getX()+" , "+pawnP3.getCurrentPosition().getY());
+        		pawnP3.play(nbBarriers, graph, goalP3);
+        		turn++;
+        		break;
+        	case 4: //Player 4
+        		System.out.println("Current Position: "+pawnP4.getCurrentPosition().getX()+" , "+pawnP3.getCurrentPosition().getY());
+        		pawnP4.play(nbBarriers, graph, goalP4);
+        		turn++;
+        		break;
         	}
-        }*/
-        
-        Node startNode = graph.getNodes().get(0);
-        List<Node> visitedNodes = graph.breadthFirstTraversal(startNode);
-
-        System.out.println("Breadth-first traversal:");
-        for (Node node : visitedNodes) {
-            System.out.println("(" + node.getX() + ", " + node.getY() + ")");
         }
-        
-        //tests
-        /*
-        Node destination = getNodeAt(graph, 1, 5);
-        pionJ1.moveTo(destination);
-        
-        // Remove an edge between two nodes
-        Node node1 = getNodeAt(graph, 3, 4);
-        Node node2 = getNodeAt(graph, 4, 4);
-        Barrier.removeEdge(graph, node1, node2);
-
-        // Try to remove an invalid edge
-        node1 = getNodeAt(graph, 2, 2);
-        node2 = getNodeAt(graph, 6, 6);
-        Barrier.removeEdge(graph, node1, node2);*/
-        
     }
 
     public static Node getNodeAt(Graph graph, int x, int y) {
-        for (Node node : graph.getNodes()) {
-            if (node.getX() == x && node.getY() == y) {
+        for (Node node : graph.getNodes()) {//browse all the nodes of the graph
+            if (node.getX() == x && node.getY() == y) { //compares each value with the parameters
                 return node;
             }
         }
         return null;
     }
-    public static void createWall(Graph graph) {
-    	Scanner sc = new Scanner(System.in);
-    	System.out.print("Sélectionner x1: ");
-		int x1 = sc.nextInt();
-		System.out.println();
-		System.out.print("Sélectionner y1: ");
-		int y1 = sc.nextInt();
-		System.out.println();
-    	System.out.print("Sélectionner x2: ");
-		int x2 = sc.nextInt();
-		System.out.println();
-		System.out.print("Sélectionner y2: ");
-		int y2 = sc.nextInt();
-		System.out.println();
-		Barrier.removeEdge(graph, getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
-		
-    }
+    
     
 }
