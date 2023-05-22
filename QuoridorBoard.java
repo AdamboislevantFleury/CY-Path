@@ -8,7 +8,7 @@ import java.util.Scanner;
  * @author CY-Path Group 15
  * @version 1.0
  * 
- * This is the <b>main function</b> of the CY-Path Projects. It initialize all the values for the Graph, Node, Pawn and Barrier classes.
+ * This is the <b>main function</b> of the CY-Path Project. It initialize all the values for the Graph, Node, Pawn and Barrier classes.
  *
  */
 
@@ -44,7 +44,7 @@ public class QuoridorBoard {
             }
         }
         
-        graph.printGraph();
+        //graph.printGraph();
         
         //Create pawn for player 1
         
@@ -58,7 +58,7 @@ public class QuoridorBoard {
         
       //Create pawn for player 2
         
-        Node startPositionP2 = getNodeAt(graph,4 ,1);
+        Node startPositionP2 = getNodeAt(graph,4 ,8);
         startPositionP2.isTaken=true;
         List<Node> goalP2 = new ArrayList <Node> ();
         for (int i=0; i<9; i++) {
@@ -97,7 +97,7 @@ public class QuoridorBoard {
         int turn=1;
         int nbBarriers=0;
         
-        while(pawnP2.hasWon()==false && pawnP1.hasWon()==false && pawnP3.hasWon()==false && pawnP4.hasWon()==false) { //Victory conditions
+        while(pawnP2.hasWon()==false && pawnP1.hasWon()==false) { //Victory conditions
         	if (turn > nbPlayers) {
         		turn = 1; //if all players played, go back to player 1.
         	}

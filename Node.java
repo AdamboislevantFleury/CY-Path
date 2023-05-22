@@ -12,7 +12,7 @@ import java.util.List;
  * @param y is an integer value. This is the first coordinate of the node in the matrix
  * @param neighbors is a list of nodes. It contains all the nodes at a distance of 1 from the node. An edge must exist between a node an its neighbors.
  * 
- * Class <b> Node </b> describe a the structure of a node into a graph. Method addNeighbor() add a new node is the list of the neighbors.
+ * Class <b> Node </b> describes a the structure of node into a graph. Method addNeighbor() adds a new node in the list of the neighbors.
  *
  */
 public class Node {
