@@ -55,6 +55,7 @@ public class QuoridorBoard {
         	goalP1.add(getNodeAt(graph,i,8));
         }
         Pawn pawnP1 = new Pawn(startPositionP1,goalP1);
+        pawnP1.hasWon();
         
       //Create pawn for player 2
         
@@ -65,6 +66,8 @@ public class QuoridorBoard {
         	goalP2.add(getNodeAt(graph,i,0));
         }
         Pawn pawnP2 = new Pawn(startPositionP2,goalP2);
+        pawnP2.hasWon();
+        
         
         //Create pawn for player 3
         
@@ -75,6 +78,7 @@ public class QuoridorBoard {
         	goalP3.add(getNodeAt(graph,0,i));
         }
         Pawn pawnP3 = new Pawn(startPositionP3,goalP3);
+        pawnP3.hasWon();
         
         //Create pawn for player 4
         
@@ -85,6 +89,7 @@ public class QuoridorBoard {
         	goalP4.add(getNodeAt(graph,8,i));
         }
         Pawn pawnP4 = new Pawn(startPositionP4,goalP4);
+        pawnP4.hasWon();
         
         Scanner sc = new Scanner(System.in);
         int nbPlayers; //Initialize number of players
@@ -97,7 +102,7 @@ public class QuoridorBoard {
         int turn=1;
         int nbBarriers=0;
         
-        while(pawnP2.hasWon()==false && pawnP1.hasWon()==false) { //Victory conditions
+        while(pawnP2.hasWon()!=true || pawnP1.hasWon()!=true || pawnP3.hasWon()!=true || pawnP4.hasWon()!=true) { //Victory conditions
         	if (turn > nbPlayers) {
         		turn = 1; //if all players played, go back to player 1.
         	}
