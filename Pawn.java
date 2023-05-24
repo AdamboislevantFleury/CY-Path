@@ -47,10 +47,7 @@ public class Pawn {
 		return false;
 	}
     //When the player choose to move his pawn.
-    public void move(Graph graph) {
-    	System.out.println("Up ^ (1), Left <- (2), Right -> (3), Down (4)");
-		Scanner sc = new Scanner(System.in); //player choose a direction
-		int answer = sc.nextInt();
+    public void move(Graph graph, int answer) {
 		Node destination;
 		List<Node> neighbors = currentPosition.getNeighbors(); //initialize a list of neighbors
 		switch(answer) {
@@ -68,13 +65,13 @@ public class Pawn {
 					}
 					else { //if we cannot jump because of wall, move again (diagonal).
 						System.out.println("Choose a direction for the diagonal");
-						this.move(graph);
+						//this.move(graph,1);
 					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again"); //invalid choice
-				this.move(graph);
+				//this.move(graph,1);
 			}
 			break;
 		case 2: //same process with the left side
@@ -90,13 +87,13 @@ public class Pawn {
 					}
 					else {
 						System.out.println("Choose a direction for the diagonal");
-						this.move(graph);
+						//this.move(graph,1);
 					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again");
-				this.move(graph);
+				//this.move(graph,1);
 			}
 			break;
 		case 3: //same process with the right side
@@ -112,13 +109,13 @@ public class Pawn {
 					}
 					else {
 						System.out.println("Choose a direction for the diagonal");
-						this.move(graph);
+						//this.move(graph,1);
 					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again");
-				this.move(graph);
+				//this.move(graph,1);
 			}
 			break;
 		case 4: //same process with the down side
@@ -133,12 +130,8 @@ public class Pawn {
 			}
 			else {
 				System.out.println("Impossible move ! Please try again");
-				this.move(graph);
+				//this.move(graph,1);
 			}
-			break;
-		default:
-			System.out.println("Incorrect value");
-			this.move(graph);
 			break;
 		}
     }
@@ -223,7 +216,7 @@ public class Pawn {
 		}
 		switch (answer) {
 		case 1:
-			this.move(graph);
+			this.move(graph,1);
 			break;
 		case 2:
 			this.createWall(graph, goal);
