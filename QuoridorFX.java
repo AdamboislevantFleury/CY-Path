@@ -108,7 +108,7 @@ public class QuoridorFX extends Application {
         startPositionP3.isTaken=true;
         List<Node> goalP3 = new ArrayList <Node> ();
         for (int i=0; i<9; i++) {
-        	goalP3.add(getNodeAt(graph,0,i));
+        	goalP3.add(getNodeAt(graph,8,i));
         }
         Pawn pawnP3 = new Pawn(startPositionP3,goalP3);
         pawnP3.hasWon();
@@ -119,7 +119,7 @@ public class QuoridorFX extends Application {
         startPositionP4.isTaken=true;
         List<Node> goalP4 = new ArrayList <Node> (); 
         for (int i=0; i<9; i++) {
-        	goalP4.add(getNodeAt(graph,8,i));
+        	goalP4.add(getNodeAt(graph,0,i));
         }
         Pawn pawnP4 = new Pawn(startPositionP4,goalP4);
         pawnP4.hasWon();
