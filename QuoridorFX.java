@@ -3,16 +3,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -21,10 +15,11 @@ public class QuoridorFX extends Application {
 	
 	private static final int TILE_SIZE = 50;
 	
-	private int currentRow;
-    private int currentCol;
-
-    private Circle token;
+	protected int currentPlayer;
+    protected int[] currentRow;
+    protected int[] currentCol;
+    
+    protected Circle[] tokens;
 
     @Override
     public void start(Stage primaryStage) {
@@ -64,6 +59,13 @@ public class QuoridorFX extends Application {
             }
         }
         
+        tokens = new Circle[2];
+        currentPlayer = 0;
+        currentRow = new int[2];
+        currentCol = new int[2];
+        
+      //Create pawn for player 1
+        
         Node startPositionP1 = getNodeAt(graph, 4, 0);//Initialize the start position
         startPositionP1.isTaken=true;
         List<Node> goalP1 = new ArrayList <Node> (); //Initialize the nodes of the graph where Player 4 wins
@@ -72,35 +74,84 @@ public class QuoridorFX extends Application {
         }
         Pawn pawnP1 = new Pawn(startPositionP1,goalP1);
         pawnP1.hasWon();
-        token = new Circle(TILE_SIZE / 2, Color.BLUE);
-        currentRow = 8;
-        currentCol = 4;
-        gridPane.add(token, currentCol, currentRow);
-        int turn = 1;
+        tokens[0] = new Circle(TILE_SIZE / 2, Color.BLUE);
+        currentRow[0] = 8;
+        currentCol[0] = 4;
+        gridPane.add(tokens[0], currentCol[0], currentRow[0]);
+        
+        //Create pawn for player 2
+        
+        Node startPositionP2 = getNodeAt(graph,4 ,8);
+        startPositionP2.isTaken=true;
+        List<Node> goalP2 = new ArrayList <Node> ();
+        for (int i=0; i<9; i++) {
+        	goalP2.add(getNodeAt(graph,i,0));
+        }
+        Pawn pawnP2 = new Pawn(startPositionP2,goalP2);
+        pawnP2.hasWon();
+        tokens[1] = new Circle(TILE_SIZE / 2, Color.RED);
+        currentRow[1] = 0;
+        currentCol[1] = 4;
+        gridPane.add(tokens[1], currentCol[1], currentRow[1]);
         
         
+        int direction[]= new int[2];
         gridPane.setOnKeyPressed(event -> {
             KeyCode keyCode = event.getCode();
             switch (keyCode) {
                 case UP:
-                    pawnP1.move(graph, 1);
-                	moveToken(token,currentRow - 1, currentCol);
+                    //moveToken(currentPlayer, currentRow[currentPlayer] - 1, currentCol[currentPlayer], tokens);
+                    switch (currentPlayer) {
+		            case 0:
+		            	pawnP1.move(graph, 1, currentRow[0],currentCol[0],direction);
+		            	break;
+		            case 1:
+		            	pawnP2.move(graph, 1, currentRow[1],currentCol[1],direction);
+		            	break;
+		            }
+                    //System.out.println(direction[0]+";"+direction[1]);
+                    moveToken(currentPlayer, direction[0], direction[1], tokens);
                     break;
                 case DOWN:
-                	pawnP1.move(graph, 4);
-                    moveToken(token,currentRow + 1, currentCol);
+                    //moveToken(currentPlayer, currentRow[currentPlayer] + 1, currentCol[currentPlayer], tokens);
+                    switch (currentPlayer) {
+		            case 0:
+		            	pawnP1.move(graph, 4,currentRow[0],currentCol[0], direction);
+		            	break;
+		            case 1:
+		            	pawnP2.move(graph, 4,currentRow[1],currentCol[1], direction);
+		            	break;
+		            }
+                    //System.out.println(direction[0]+";"+direction[1]);
+                    moveToken(currentPlayer, direction[0], direction[1], tokens);
                     break;
                 case LEFT:
-                	pawnP1.move(graph, 2);
-                    moveToken(token,currentRow, currentCol - 1);
+                    //moveToken(currentPlayer, currentRow[currentPlayer], currentCol[currentPlayer] - 1, tokens);
+		            switch (currentPlayer) {
+		            case 0:
+		            	pawnP1.move(graph, 2,currentRow[0],currentCol[0], direction);
+		            	break;
+		            case 1:
+		            	pawnP2.move(graph, 2,currentRow[1],currentCol[1], direction);
+		            	break;
+		            }
+		            moveToken(currentPlayer, direction[0], direction[1], tokens);
                     break;
                 case RIGHT:
-                	pawnP1.move(graph, 3);
-                    moveToken(token,currentRow, currentCol + 1);
+                    //moveToken(currentPlayer, currentRow[currentPlayer], currentCol[currentPlayer] + 1, tokens);
+                    switch (currentPlayer) {
+		            case 0:
+		            	pawnP1.move(graph, 3,currentRow[0],currentCol[0], direction);
+		            	break;
+		            case 1:
+		            	pawnP2.move(graph, 3,currentRow[1],currentCol[1], direction);
+		            	break;
+		            }
+                    moveToken(currentPlayer, direction[0], direction[1], tokens);
                     break;
             }
         });
-       
+        
         Scene scene = new Scene(gridPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Test");
@@ -117,16 +168,17 @@ public class QuoridorFX extends Application {
         }
         return null;
     }
-    private void moveToken(Circle token, int newRow, int newCol) {
+    protected void moveToken(int player, int newRow, int newCol, Circle[] tokens) {
         if (isValidMove(newRow, newCol)) {
-            GridPane.setRowIndex(token, newRow);
-            GridPane.setColumnIndex(token, newCol);
-            currentRow = newRow;
-            currentCol = newCol;
+            GridPane.setRowIndex(tokens[player], newRow);
+            GridPane.setColumnIndex(tokens[player], newCol);
+            currentRow[player] = newRow;
+            currentCol[player] = newCol;
+            currentPlayer = (currentPlayer + 1) % 2; // Alterner les joueurs
         }
     }
 
-    private boolean isValidMove(int row, int col) {
+    protected boolean isValidMove(int row, int col) {
         return row >= 0 && row < 9 && col >= 0 && col < 9;
     }
     

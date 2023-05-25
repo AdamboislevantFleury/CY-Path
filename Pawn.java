@@ -3,6 +3,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javafx.scene.input.KeyCode;
+import javafx.scene.shape.Circle;
+
 /**
  * 
  * @author CY-Path Group 15
@@ -13,7 +16,7 @@ import java.util.Scanner;
  * This class implements several methods to displace the pawn through the graph, to check if the player has won, and to place a wall.
  *
  */
-public class Pawn {
+public class Pawn extends QuoridorFX{
 	private Node currentPosition;
 	List<Node> goal = new ArrayList <Node> ();
 	//constructor
@@ -47,8 +50,10 @@ public class Pawn {
 		return false;
 	}
     //When the player choose to move his pawn.
-    public void move(Graph graph, int answer) {
+    public void move(Graph graph, int answer, int row, int col, int[] result) {
 		Node destination;
+		result[0]=row;
+		result[1]=col;
 		List<Node> neighbors = currentPosition.getNeighbors(); //initialize a list of neighbors
 		switch(answer) {
 		case 1:
@@ -56,22 +61,28 @@ public class Pawn {
 			if (neighbors.contains(destination)) { //check if the destination is possible
 				if (destination.isTaken==false) { //check if a pawn is already on the destination
 					this.moveTo(destination);
+					//System.out.println(result[0]+";"+result[1]);
+					result[0]=result[0]-1;
+					
 				}
 				else {
 					this.moveTo(destination); //if yes, move two times
 					destination = getNodeAt(graph, this.getCurrentPosition().getX(), this.getCurrentPosition().getY()+1);
+					neighbors = currentPosition.getNeighbors();
 					if (neighbors.contains(destination)) { //re-check
 						this.moveTo(destination);
+						result[0]=result[0]-2;
+						
 					}
 					else { //if we cannot jump because of wall, move again (diagonal).
 						System.out.println("Choose a direction for the diagonal");
-						//this.move(graph,1);
+						//this.move(graph);
 					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again"); //invalid choice
-				//this.move(graph,1);
+				//this.move(graph);
 			}
 			break;
 		case 2: //same process with the left side
@@ -79,21 +90,25 @@ public class Pawn {
 			if (neighbors.contains(destination)) {
 				if (destination.isTaken==false) {
 					this.moveTo(destination);
+					result[1]=result[1]-1;
 				}
 				else {
 					this.moveTo(destination);
+					destination = getNodeAt(graph, this.getCurrentPosition().getX()-1, this.getCurrentPosition().getY());
+					neighbors = currentPosition.getNeighbors();
 					if (neighbors.contains(destination)) {
 						this.moveTo(destination);
+						result[1]=result[1]-2;
 					}
 					else {
 						System.out.println("Choose a direction for the diagonal");
-						//this.move(graph,1);
+						//this.move(graph);
 					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again");
-				//this.move(graph,1);
+				//this.move(graph);
 			}
 			break;
 		case 3: //same process with the right side
@@ -101,21 +116,25 @@ public class Pawn {
 			if (neighbors.contains(destination)) {
 				if (destination.isTaken==false) {
 					this.moveTo(destination);
+					result[1]=result[1]+1;
 				}
 				else {
 					this.moveTo(destination);
+					destination = getNodeAt(graph, this.getCurrentPosition().getX()+1, this.getCurrentPosition().getY());
+					neighbors = currentPosition.getNeighbors();
 					if (neighbors.contains(destination)) {
 						this.moveTo(destination);
+						result[1]=result[1]+2;
 					}
 					else {
 						System.out.println("Choose a direction for the diagonal");
-						//this.move(graph,1);
+						//this.move(graph);
 					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again");
-				//this.move(graph,1);
+				//this.move(graph);
 			}
 			break;
 		case 4: //same process with the down side
@@ -123,18 +142,35 @@ public class Pawn {
 			if (neighbors.contains(destination)) {
 				if (destination.isTaken==false) {
 					this.moveTo(destination);
+					//System.out.println(result[0]+";"+result[1]);
+					result[0]=result[0]+1;
 				}
 				else {
-					destination = getNodeAt(graph, this.getCurrentPosition().getX(), this.getCurrentPosition().getY()-2);
+					this.moveTo(destination);
+					destination = getNodeAt(graph, this.getCurrentPosition().getX(), this.getCurrentPosition().getY()-1);
+					neighbors = currentPosition.getNeighbors();
+					if (neighbors.contains(destination)) {
+						this.moveTo(destination);
+						result[0]=result[0]+2;
+					}
+					else {
+						System.out.println("Choose a direction for the diagonal");
+						//this.move(graph);
+					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again");
-				//this.move(graph,1);
+				//this.move(graph);
 			}
+			break;
+		default:
+			System.out.println("Incorrect value");
+			//this.move(graph);
 			break;
 		}
     }
+
     public static Node getNodeAt(Graph graph, int x, int y) {
         for (Node node : graph.getNodes()) {
             if (node.getX() == x && node.getY() == y) {
@@ -216,7 +252,7 @@ public class Pawn {
 		}
 		switch (answer) {
 		case 1:
-			this.move(graph,1);
+			//this.move(graph,1);
 			break;
 		case 2:
 			this.createWall(graph, goal);
