@@ -50,7 +50,7 @@ public class Pawn extends QuoridorFX{
 		return false;
 	}
     //When the player choose to move his pawn.
-    public void move(Graph graph, int answer, int row, int col, int[] result) {
+    public int move(Graph graph, int answer, int row, int col, int[] result) {
 		Node destination;
 		result[0]=row;
 		result[1]=col;
@@ -63,6 +63,7 @@ public class Pawn extends QuoridorFX{
 					this.moveTo(destination);
 					//System.out.println(result[0]+";"+result[1]);
 					result[0]=result[0]-1;
+					return 0;
 					
 				}
 				else {
@@ -72,17 +73,26 @@ public class Pawn extends QuoridorFX{
 					if (neighbors.contains(destination)) { //re-check
 						this.moveTo(destination);
 						result[0]=result[0]-2;
+						return 0;
 						
 					}
 					else { //if we cannot jump because of wall, move again (diagonal).
-						System.out.println("Choose a direction for the diagonal");
-						//this.move(graph);
+						if (chooseDiago()==1) {
+							result[0]=result[0]-1;
+							result[1]=result[1]+1;
+							return 0;
+						}
+						else if (chooseDiago()==2) {
+							result[0]=result[0]-1;
+							result[1]=result[1]-1;
+							return 0;
+						}
 					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again"); //invalid choice
-				//this.move(graph);
+				return 1;
 			}
 			break;
 		case 2: //same process with the left side
@@ -91,6 +101,7 @@ public class Pawn extends QuoridorFX{
 				if (destination.isTaken==false) {
 					this.moveTo(destination);
 					result[1]=result[1]-1;
+					return 0;
 				}
 				else {
 					this.moveTo(destination);
@@ -99,16 +110,25 @@ public class Pawn extends QuoridorFX{
 					if (neighbors.contains(destination)) {
 						this.moveTo(destination);
 						result[1]=result[1]-2;
+						return 0;
 					}
 					else {
-						System.out.println("Choose a direction for the diagonal");
-						//this.move(graph);
+						if (chooseDiago()==1) {
+							result[1]=result[1]-1;
+							result[0]=result[0]-1;
+							return 0;
+						}
+						else if (chooseDiago()==2) {
+							result[1]=result[1]-1;
+							result[0]=result[0]+1;
+							return 0;
+						}
 					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again");
-				//this.move(graph);
+				return 1;
 			}
 			break;
 		case 3: //same process with the right side
@@ -117,6 +137,7 @@ public class Pawn extends QuoridorFX{
 				if (destination.isTaken==false) {
 					this.moveTo(destination);
 					result[1]=result[1]+1;
+					return 0;
 				}
 				else {
 					this.moveTo(destination);
@@ -125,16 +146,25 @@ public class Pawn extends QuoridorFX{
 					if (neighbors.contains(destination)) {
 						this.moveTo(destination);
 						result[1]=result[1]+2;
+						return 0;
 					}
 					else {
-						System.out.println("Choose a direction for the diagonal");
-						//this.move(graph);
+						if (chooseDiago()==1) {
+							result[1]=result[1]+1;
+							result[0]=result[0]+1;
+							return 0;
+						}
+						else if (chooseDiago()==2) {
+							result[1]=result[1]+1;
+							result[0]=result[0]-1;
+							return 0;
+						}
 					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again");
-				//this.move(graph);
+				return 1;
 			}
 			break;
 		case 4: //same process with the down side
@@ -144,6 +174,7 @@ public class Pawn extends QuoridorFX{
 					this.moveTo(destination);
 					//System.out.println(result[0]+";"+result[1]);
 					result[0]=result[0]+1;
+					return 0;
 				}
 				else {
 					this.moveTo(destination);
@@ -152,23 +183,32 @@ public class Pawn extends QuoridorFX{
 					if (neighbors.contains(destination)) {
 						this.moveTo(destination);
 						result[0]=result[0]+2;
+						return 0;
 					}
 					else {
-						System.out.println("Choose a direction for the diagonal");
-						//this.move(graph);
+						if (chooseDiago()==1) {
+							result[0]=result[0]+1;
+							result[1]=result[1]-1;
+							return 0;
+						}
+						else if (chooseDiago()==2) {
+							result[0]=result[0]+1;
+							result[1]=result[1]+1;
+							return 0;
+						}
 					}
 				}
 			}
 			else {
 				System.out.println("Impossible move ! Please try again");
-				//this.move(graph);
+				return 1;
 			}
 			break;
 		default:
 			System.out.println("Incorrect value");
-			//this.move(graph);
-			break;
+			return 1;
 		}
+		return 1;
     }
 
     public static Node getNodeAt(Graph graph, int x, int y) {
