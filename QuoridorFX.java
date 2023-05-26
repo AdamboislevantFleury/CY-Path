@@ -5,8 +5,7 @@ import java.util.List;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
-
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -14,9 +13,10 @@ import javafx.scene.control.ButtonType;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
-
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
 public class QuoridorFX extends Application {
@@ -27,8 +27,10 @@ public class QuoridorFX extends Application {
 	protected int currentPlayer;
     protected int[] currentRow;
     protected int[] currentCol;
-    private int lastClickedRow = -1;
-    private int lastClickedCol = -1;
+
+    
+    private boolean[][] horizontalBarriers = new boolean[9 - 1][9];
+    private boolean[][] verticalBarriers = new boolean[9][9 - 1];
     
     
     protected Circle[] tokens;
@@ -39,10 +41,14 @@ public class QuoridorFX extends Application {
     public void start(Stage primaryStage) {
     	numPlayers = askNumberOfPlayers();
     	Graph graph = new Graph();
+    	
     	GridPane gridPane = new GridPane();
-        gridPane.setPadding(new Insets(10));
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
+        //gridPane.setPadding(new Insets(10));
+        //gridPane.setHgap(10);
+        //gridPane.setVgap(10);
+        Group root = new Group();
+    	StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(gridPane, root);
         tiles = new Circle[9][9];
         
 
@@ -58,11 +64,20 @@ public class QuoridorFX extends Application {
                 tile.setFill(Color.LIGHTGRAY);
                 gridPane.add(tile, colIndex, rowIndex);
                 tiles[colIndex][rowIndex] = tile;
-                final int currentRow = rowIndex;
-                final int currentCol = colIndex;
                 
+            }
+        }
+        for (int row = 0; row < 9 - 1; row++) {
+            for (int col = 0; col < 9; col++) {
+                Line horizontalLine = createHorizontalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
+                root.getChildren().add(horizontalLine);
+            }
+        }
 
-                tile.setOnMouseClicked(event -> { currentPlayer=handleTileClick(8-currentRow, currentCol, gridPane, pawnlist, graph, currentPlayer, numPlayers);});
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9 - 1; col++) {
+                Line verticalLine = createVerticalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
+                root.getChildren().add(verticalLine);
             }
         }
         
@@ -267,7 +282,7 @@ public class QuoridorFX extends Application {
             }
         });
         
-        Scene scene = new Scene(gridPane);
+        Scene scene = new Scene(stackPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("CY-PATH");
         primaryStage.show();
@@ -358,11 +373,7 @@ public class QuoridorFX extends Application {
     	Stage primaryStage = new Stage();
         win.start(primaryStage);
     }
-    
-    private boolean isAdjacent(int row1, int col1, int row2, int col2) {
-        return Math.abs(row1 - row2) <= 1 && Math.abs(col1 - col2) <= 1 && !(row1 == row2 && col1 == col2);
-    }
-    public static Graph createWall(Graph graph, int x1, int y1, int x2, int y2, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {
+    public static int createWall(Graph graph, int x1, int y1, int x2, int y2, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {
 		Graph testGraph = graph; //create a copy of the graph for testing the BFS
 		//System.out.println("Suppression entre "+x1+" : "+y1+" et :"+x2+" : "+y2);
 		Barrier.removeEdge(testGraph, getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
@@ -370,41 +381,44 @@ public class QuoridorFX extends Application {
 			Pawn currentPawn=pawnlist.get(i);
 			if (currentPawn.checkWall(testGraph, currentPawn.goal)==false) { //check with the checkWall() method
 				System.out.println("Impossible move! ");
-				return graph;
+				return 1;
 			}
 		}
-		return testGraph; //else, the graph is changed
+		graph=testGraph; //else, the graph is changed
+		return 0;
     }
-    
-    private int addLineBetweenTiles(int row1, int col1, int row2, int col2,GridPane gridPane, List<Pawn>pawnlist, Graph graph, int currentPlayer, int numPlayers) {
-        tiles[col1][8-row1].setFill(Color.DARKGRAY);
-        //tiles[col1][row1].setRadius(27);
-        tiles[col2][8-row2].setFill(Color.DARKGRAY);
-        //tiles[col2][row2].setRadius(27);
-        createWall(graph, col1, row1, col2, row2, pawnlist, currentPlayer, numPlayers);
-        currentPlayer = (currentPlayer + 1) % numPlayers;
-        return currentPlayer;
-    }
-    
-    private int handleTileClick(int row, int col,GridPane gridPane, List<Pawn>pawnlist, Graph graph, int currentPlayer, int numPlayers) {
-        System.out.println("( "+col+" ; "+row+" )");
-    	if (lastClickedRow == -1 && lastClickedCol == -1) {
-            // Aucune case précédemment cliquée
-            lastClickedRow = row;
-            lastClickedCol = col;
-        } else {
-            // Une case précédemment cliquée existe
-            if (isAdjacent(lastClickedRow, lastClickedCol, row, col)) {
-                // Les deux cases sont adjacentes
-                currentPlayer=addLineBetweenTiles(lastClickedRow, lastClickedCol, row, col,gridPane,pawnlist, graph, currentPlayer, numPlayers);
+    private Line createHorizontalLine(int col, int row, Graph graph, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {
+        Line horizontalLine = new Line(col * TILE_SIZE-10, (row + 1) * TILE_SIZE+10, (col + 1) * TILE_SIZE-10, (row + 1) * TILE_SIZE+10);
+        horizontalLine.setStroke(horizontalBarriers[row][col] ? Color.RED : Color.BLACK);
+        horizontalLine.setStrokeWidth(4);
+        horizontalLine.setOnMouseClicked(event -> {
+            System.out.println(col+" : "+(8-row));
+            if (horizontalBarriers[row][col]==false) {
+            	if(createWall(graph, col, 8-row, col, 8-row-1, pawnlist, currentPlayer, numPlayers)==0) {
+            		horizontalBarriers[row][col] = !horizontalBarriers[row][col];
+                    horizontalLine.setStroke(horizontalBarriers[row][col] ? Color.RED : Color.BLACK);
+            	}
             }
+        	
+        });
+        return horizontalLine;
+    }
 
-            // Réinitialiser les cases précédemment cliquées
-            lastClickedRow = -1;
-            lastClickedCol = -1;
+    private Line createVerticalLine(int col, int row, Graph graph, List<Pawn>pawnlist, int currentPlayer, int numPlayers ) {
+        Line verticalLine = new Line((col + 1) * TILE_SIZE-10, row * TILE_SIZE+10, (col + 1) * TILE_SIZE-10, (row + 1) * TILE_SIZE+10);
+        verticalLine.setStroke(verticalBarriers[row][col] ? Color.RED : Color.BLACK);
+        verticalLine.setStrokeWidth(4);
+        verticalLine.setOnMouseClicked(event -> {
+        	System.out.println(col+" : "+(8-row));
+        	if (verticalBarriers[row][col]==false) {
+        		if (createWall(graph, col, 8-row, col+1, 8-row, pawnlist, currentPlayer, numPlayers)==0) {
+        			verticalBarriers[row][col] = true;
+                    verticalLine.setStroke(verticalBarriers[row][col] ? Color.RED : Color.BLACK);
+        		}
+        	}
             
-        }
-    	return currentPlayer;
+        });
+        return verticalLine;
     }
     
 }
