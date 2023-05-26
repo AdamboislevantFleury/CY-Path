@@ -1,16 +1,20 @@
 package cypath;
 import java.util.ArrayList;
+
 import java.util.List;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -23,8 +27,13 @@ public class QuoridorFX extends Application {
 	protected int currentPlayer;
     protected int[] currentRow;
     protected int[] currentCol;
+    private int lastClickedRow = -1;
+    private int lastClickedCol = -1;
+    
     
     protected Circle[] tokens;
+    private Circle[][] tiles;
+    public List<Pawn> pawnlist = new ArrayList<Pawn>();
 
     @Override
     public void start(Stage primaryStage) {
@@ -34,19 +43,29 @@ public class QuoridorFX extends Application {
         gridPane.setPadding(new Insets(10));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
-        
+        tiles = new Circle[9][9];
         
 
         // Add nodes representing intersections
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                Node node = new Node(i, j);
+            	int rowIndex = 8-j;
+                int colIndex = i;
+            	
+            	Node node = new Node(colIndex, rowIndex);
                 graph.addNode(node);
                 Circle tile = new Circle(TILE_SIZE / 2);
                 tile.setFill(Color.LIGHTGRAY);
-                gridPane.add(tile, i, j);
+                gridPane.add(tile, colIndex, rowIndex);
+                tiles[colIndex][rowIndex] = tile;
+                final int currentRow = rowIndex;
+                final int currentCol = colIndex;
+                
+
+                tile.setOnMouseClicked(event -> { currentPlayer=handleTileClick(8-currentRow, currentCol, gridPane, pawnlist, graph, currentPlayer, numPlayers);});
             }
         }
+        
 
         // Add edges representing possible moves
         // Connect adjacent nodes horizontally and vertically
@@ -81,11 +100,12 @@ public class QuoridorFX extends Application {
         	goalP1.add(getNodeAt(graph,i,8));
         }
         Pawn pawnP1 = new Pawn(startPositionP1,goalP1);
-        pawnP1.hasWon();
-        tokens[0] = new Circle(TILE_SIZE / 2, Color.BLUE);
-        currentRow[0] = 8;
+        
+        tokens[0] = new Circle(TILE_SIZE / 2, Color.BLUE); //Create the pawn on the GUI
+        currentRow[0] = 8; //Place the pawn on the game board
         currentCol[0] = 4;
-        gridPane.add(tokens[0], currentCol[0], currentRow[0]);
+        gridPane.add(tokens[0], currentCol[0], currentRow[0]); //add the pawn to the gridPane
+        pawnlist.add(pawnP1);
         
         //Create pawn for player 2
         
@@ -96,11 +116,12 @@ public class QuoridorFX extends Application {
         	goalP2.add(getNodeAt(graph,i,0));
         }
         Pawn pawnP2 = new Pawn(startPositionP2,goalP2);
-        pawnP2.hasWon();
+        
         tokens[1] = new Circle(TILE_SIZE / 2, Color.RED);
         currentRow[1] = 0;
         currentCol[1] = 4;
         gridPane.add(tokens[1], currentCol[1], currentRow[1]);
+        pawnlist.add(pawnP2);
         
       //Create pawn for player 3
         
@@ -111,7 +132,7 @@ public class QuoridorFX extends Application {
         	goalP3.add(getNodeAt(graph,8,i));
         }
         Pawn pawnP3 = new Pawn(startPositionP3,goalP3);
-        pawnP3.hasWon();
+        
         
       //Create pawn for player 4
         
@@ -122,7 +143,7 @@ public class QuoridorFX extends Application {
         	goalP4.add(getNodeAt(graph,0,i));
         }
         Pawn pawnP4 = new Pawn(startPositionP4,goalP4);
-        pawnP4.hasWon();
+        
         if (numPlayers==4) {
         	//Create pawn for player 3
             
@@ -130,6 +151,7 @@ public class QuoridorFX extends Application {
             currentRow[2] = 4;
             currentCol[2] = 0;
             gridPane.add(tokens[2], currentCol[2], currentRow[2]);
+            pawnlist.add(pawnP3);
             
             //Create pawn for player 4
             
@@ -137,6 +159,7 @@ public class QuoridorFX extends Application {
             currentRow[3] = 4;
             currentCol[3] = 8;
             gridPane.add(tokens[3], currentCol[3], currentRow[3]);
+            pawnlist.add(pawnP4);
         }
         
         int direction[]= new int[2];
@@ -145,10 +168,9 @@ public class QuoridorFX extends Application {
             int result=-1;
             switch (keyCode) {
                 case UP:
-                    //moveToken(currentPlayer, currentRow[currentPlayer] - 1, currentCol[currentPlayer], tokens);
                     switch (currentPlayer) {
-		            case 0:
-		            	result=pawnP1.move(graph, 1, currentRow[0],currentCol[0],direction);
+		            case 0: //use the move function to move the pawn on the class and on the game board
+		            	result=pawnP1.move(graph, 1, currentRow[0],currentCol[0],direction);//if the function return 0, move on the same direction.
 		            	break;
 		            case 1:
 		            	result=pawnP2.move(graph, 1, currentRow[1],currentCol[1],direction);
@@ -160,13 +182,13 @@ public class QuoridorFX extends Application {
 		            	result=pawnP4.move(graph, 1,currentRow[3],currentCol[3], direction);
 		            	break;
 		            }
-                    //System.out.println(direction[0]+";"+direction[1]);
+                    //else: move following a diagonal
                     if (result==0) {
                     	moveToken(currentPlayer, direction[0], direction[1], tokens);
                     }
                     break;
                 case DOWN:
-                    //moveToken(currentPlayer, currentRow[currentPlayer] + 1, currentCol[currentPlayer], tokens);
+                    //Same process for each direction
                     switch (currentPlayer) {
 		            case 0:
 		            	result=pawnP1.move(graph, 4,currentRow[0],currentCol[0], direction);
@@ -181,14 +203,14 @@ public class QuoridorFX extends Application {
 		            	result=pawnP4.move(graph, 4,currentRow[3],currentCol[3], direction);
 		            	break;
 		            }
-                    //System.out.println(direction[0]+";"+direction[1]);
+                    
                     if (result==0) {
                     	moveToken(currentPlayer, direction[0], direction[1], tokens);
                     }
                     
                     break;
                 case LEFT:
-                    //moveToken(currentPlayer, currentRow[currentPlayer], currentCol[currentPlayer] - 1, tokens);
+                    //Same process
 		            switch (currentPlayer) {
 		            case 0:
 		            	result=pawnP1.move(graph, 2,currentRow[0],currentCol[0], direction);
@@ -209,7 +231,7 @@ public class QuoridorFX extends Application {
 		            
                     break;
                 case RIGHT:
-                    //moveToken(currentPlayer, currentRow[currentPlayer], currentCol[currentPlayer] + 1, tokens);
+                    //Same process
                     switch (currentPlayer) {
 		            case 0:
 		            	result=pawnP1.move(graph, 3,currentRow[0],currentCol[0], direction);
@@ -229,6 +251,9 @@ public class QuoridorFX extends Application {
                     }
                     
                     break;
+                default:
+                	Platform.exit();
+                    System.exit(0);
             }
             if (numPlayers==4) {
             	if (pawnP1.hasWon()==true || pawnP2.hasWon()==true || pawnP3.hasWon()==true || pawnP4.hasWon()==true) {
@@ -244,7 +269,7 @@ public class QuoridorFX extends Application {
         
         Scene scene = new Scene(gridPane);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Test");
+        primaryStage.setTitle("CY-PATH");
         primaryStage.show();
         
         gridPane.requestFocus();
@@ -259,13 +284,13 @@ public class QuoridorFX extends Application {
         return null;
     }
     protected void moveToken(int player, int newRow, int newCol, Circle[] tokens) {
-        if (isValidMove(newRow, newCol)) {
-            GridPane.setRowIndex(tokens[player], newRow);
-            GridPane.setColumnIndex(tokens[player], newCol);
-            currentRow[player] = newRow;
-            currentCol[player] = newCol;
-            currentPlayer = (currentPlayer + 1) % numPlayers; // Alterner les joueurs
-            System.out.println("Next turn: player:"+currentPlayer);
+        if (isValidMove(newRow, newCol)) { //check if the move is possible
+            GridPane.setRowIndex(tokens[player], newRow); //set the row of the current position
+            GridPane.setColumnIndex(tokens[player], newCol); //set the column of the current position
+            currentRow[player] = newRow; //change row
+            currentCol[player] = newCol; //change column
+            currentPlayer = (currentPlayer + 1) % numPlayers; // Alternate players
+            //System.out.println("Next turn: player:"+currentPlayer);
         }
     }
 
@@ -278,13 +303,13 @@ public class QuoridorFX extends Application {
     }
     private int askNumberOfPlayers() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Nombre de joueurs");
-        alert.setHeaderText("Choisissez le nombre de joueurs");
-        alert.setContentText("Sélectionnez le nombre de joueurs pour la partie :");
+        alert.setTitle("Number of players");
+        alert.setHeaderText("Choose the number of players");
+        alert.setContentText("Select the number of players for the game: ");
 
-        ButtonType twoPlayersButton = new ButtonType("2 joueurs");
-        ButtonType fourPlayersButton = new ButtonType("4 joueurs");
-        ButtonType cancelButton = new ButtonType("Annuler");
+        ButtonType twoPlayersButton = new ButtonType("2 players");
+        ButtonType fourPlayersButton = new ButtonType("4 players");
+        ButtonType cancelButton = new ButtonType("Quit game");
 
         alert.getButtonTypes().setAll(twoPlayersButton, fourPlayersButton, cancelButton);
 
@@ -304,13 +329,13 @@ public class QuoridorFX extends Application {
     
     protected int chooseDiago() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Diagonale");
-        alert.setHeaderText("Choisir la direction de la digonale");
-        alert.setContentText("Sélectionnez la droite ou la gauche");
+        alert.setTitle("Diagonal");
+        alert.setHeaderText("Choose a direction");
+        alert.setContentText("Choose if you want to go at the right or left side of the opposite pawn");
 
-        ButtonType Right = new ButtonType("Droite");
-        ButtonType Left = new ButtonType("Gauche");
-        ButtonType cancelButton = new ButtonType("Quitter le jeu");
+        ButtonType Right = new ButtonType("Right");
+        ButtonType Left = new ButtonType("Left");
+        ButtonType cancelButton = new ButtonType("Quit game");
 
         alert.getButtonTypes().setAll(Right, Left, cancelButton);
 
@@ -332,10 +357,54 @@ public class QuoridorFX extends Application {
     	EndWindow win = new EndWindow();
     	Stage primaryStage = new Stage();
         win.start(primaryStage);
-    	
-    	//Platform.exit();
-        //System.exit(0);
     }
     
+    private boolean isAdjacent(int row1, int col1, int row2, int col2) {
+        return Math.abs(row1 - row2) <= 1 && Math.abs(col1 - col2) <= 1 && !(row1 == row2 && col1 == col2);
+    }
+    public static Graph createWall(Graph graph, int x1, int y1, int x2, int y2, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {
+		Graph testGraph = graph; //create a copy of the graph for testing the BFS
+		//System.out.println("Suppression entre "+x1+" : "+y1+" et :"+x2+" : "+y2);
+		Barrier.removeEdge(testGraph, getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
+		for (int i=0; i<pawnlist.size(); i++) {
+			Pawn currentPawn=pawnlist.get(i);
+			if (currentPawn.checkWall(testGraph, currentPawn.goal)==false) { //check with the checkWall() method
+				System.out.println("Impossible move! ");
+				return graph;
+			}
+		}
+		return testGraph; //else, the graph is changed
+    }
+    
+    private int addLineBetweenTiles(int row1, int col1, int row2, int col2,GridPane gridPane, List<Pawn>pawnlist, Graph graph, int currentPlayer, int numPlayers) {
+        tiles[col1][8-row1].setFill(Color.DARKGRAY);
+        //tiles[col1][row1].setRadius(27);
+        tiles[col2][8-row2].setFill(Color.DARKGRAY);
+        //tiles[col2][row2].setRadius(27);
+        createWall(graph, col1, row1, col2, row2, pawnlist, currentPlayer, numPlayers);
+        currentPlayer = (currentPlayer + 1) % numPlayers;
+        return currentPlayer;
+    }
+    
+    private int handleTileClick(int row, int col,GridPane gridPane, List<Pawn>pawnlist, Graph graph, int currentPlayer, int numPlayers) {
+        System.out.println("( "+col+" ; "+row+" )");
+    	if (lastClickedRow == -1 && lastClickedCol == -1) {
+            // Aucune case précédemment cliquée
+            lastClickedRow = row;
+            lastClickedCol = col;
+        } else {
+            // Une case précédemment cliquée existe
+            if (isAdjacent(lastClickedRow, lastClickedCol, row, col)) {
+                // Les deux cases sont adjacentes
+                currentPlayer=addLineBetweenTiles(lastClickedRow, lastClickedCol, row, col,gridPane,pawnlist, graph, currentPlayer, numPlayers);
+            }
 
+            // Réinitialiser les cases précédemment cliquées
+            lastClickedRow = -1;
+            lastClickedCol = -1;
+            
+        }
+    	return currentPlayer;
+    }
+    
 }

@@ -235,50 +235,7 @@ public class Pawn extends QuoridorFX{
     	return false;
     	
     }
-    //create wall
-    public Graph createWall(Graph graph, List<Node> goal) {
-    	Scanner sc = new Scanner(System.in);
-    	/*How to use this function ?
-    	 *  x1, y1 is the first node of the barrier,
-    	 *  x2, y2 is the node is the opposite node of the square made of 4 nodes.
-    	 */
-    	System.out.print("Enter x1: ");
-		int x1 = sc.nextInt();
-		System.out.println();
-		System.out.print("Enter y1: ");
-		int y1 = sc.nextInt();
-		System.out.println();
-    	System.out.print("Enter x2: ");
-		int x2 = sc.nextInt();
-		System.out.println();
-		System.out.print("Enter y2: ");
-		int y2 = sc.nextInt();
-		System.out.println();
-		Graph testGraph = graph; //create a copy of the graph for testing the BFS
-		System.out.println("Choose a direction for your wall: Horizontal (1) - ; Vertical (2) | "); //choose if the wall is horizontal or vertical
-		int dir=sc.nextInt();
-		switch(dir) {
-		case 1:
-			Barrier.removeEdge(testGraph, getNodeAt(graph,x1,y1),getNodeAt(graph,x1,y2)); //remove two edges
-			Barrier.removeEdge(testGraph, getNodeAt(graph,x2,y1),getNodeAt(graph,x2,y2));
-			break;
-		case 2:
-			Barrier.removeEdge(testGraph, getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y1));
-			Barrier.removeEdge(testGraph, getNodeAt(graph,x1,y2),getNodeAt(graph,x2,y2));
-			break;
-		default:
-			System.out.println("Wrong value !");
-			break;
-		}
-		if (this.checkWall(testGraph, goal)==false) { //check with the checkWall() method
-			System.out.println("Impossible move! ");
-			this.createWall(graph,goal); //if a wall blocks the victory, the graph doesn't change
-			return graph;
-		}
-		else {
-			return testGraph; //else, the graph is changed
-		}
-    }
+    
     
     public int play(int nbBarriers, Graph graph, List<Node>goal) {
     	int answer;
@@ -295,7 +252,7 @@ public class Pawn extends QuoridorFX{
 			//this.move(graph,1);
 			break;
 		case 2:
-			this.createWall(graph, goal);
+			//this.createWall(graph, goal);
 			nbBarriers++;
 			break;
 		default:
