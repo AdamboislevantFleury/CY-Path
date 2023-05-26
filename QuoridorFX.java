@@ -67,19 +67,23 @@ public class QuoridorFX extends Application {
                 
             }
         }
+        
+        Line[][] horizontalLines = new Line[8][9];
         for (int row = 0; row < 9 - 1; row++) {
             for (int col = 0; col < 9; col++) {
-                Line horizontalLine = createHorizontalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
-                root.getChildren().add(horizontalLine);
+                horizontalLines[row][col] = createHorizontalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
+                root.getChildren().add(horizontalLines[row][col]);
             }
         }
-
+        Line[][] verticalLines = new Line[9][8];
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9 - 1; col++) {
-                Line verticalLine = createVerticalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
-                root.getChildren().add(verticalLine);
+                verticalLines[row][col]= createVerticalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
+                root.getChildren().add(verticalLines[row][col]);
             }
         }
+        
+        
         
 
         // Add edges representing possible moves
@@ -186,6 +190,7 @@ public class QuoridorFX extends Application {
                     switch (currentPlayer) {
 		            case 0: //use the move function to move the pawn on the class and on the game board
 		            	result=pawnP1.move(graph, 1, currentRow[0],currentCol[0],direction);//if the function return 0, move on the same direction.
+		            	
 		            	break;
 		            case 1:
 		            	result=pawnP2.move(graph, 1, currentRow[1],currentCol[1],direction);
@@ -229,6 +234,7 @@ public class QuoridorFX extends Application {
 		            switch (currentPlayer) {
 		            case 0:
 		            	result=pawnP1.move(graph, 2,currentRow[0],currentCol[0], direction);
+		            	graph.printGraph();
 		            	break;
 		            case 1:
 		            	result=pawnP2.move(graph, 2,currentRow[1],currentCol[1], direction);
@@ -374,17 +380,21 @@ public class QuoridorFX extends Application {
         win.start(primaryStage);
     }
     public static int createWall(Graph graph, int x1, int y1, int x2, int y2, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {
-		Graph testGraph = graph; //create a copy of the graph for testing the BFS
+		
 		//System.out.println("Suppression entre "+x1+" : "+y1+" et :"+x2+" : "+y2);
-		Barrier.removeEdge(testGraph, getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
+		Barrier.removeEdge(graph, getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
+		//graph.printGraph();
 		for (int i=0; i<pawnlist.size(); i++) {
 			Pawn currentPawn=pawnlist.get(i);
-			if (currentPawn.checkWall(testGraph, currentPawn.goal)==false) { //check with the checkWall() method
+			if (currentPawn.checkWall(graph, currentPawn.goal)==false) { //check with the checkWall() method
 				System.out.println("Impossible move! ");
+				graph.printGraph();
+				graph.addEdge(getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
+				graph.printGraph();
 				return 1;
 			}
 		}
-		graph=testGraph; //else, the graph is changed
+		//else, the graph is changed
 		return 0;
     }
     private Line createHorizontalLine(int col, int row, Graph graph, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {

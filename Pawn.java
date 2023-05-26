@@ -54,7 +54,10 @@ public class Pawn extends QuoridorFX{
 		Node destination;
 		result[0]=row;
 		result[1]=col;
-		List<Node> neighbors = currentPosition.getNeighbors(); //initialize a list of neighbors
+		List<Node> neighbors = currentPosition.getNeighbors();
+		System.out.println("Test");
+		graph.printGraph();
+		//initialize a list of neighbors
 		switch(answer) {
 		case 1:
 			destination = getNodeAt(graph, this.getCurrentPosition().getX(), this.getCurrentPosition().getY()+1); //Going up
