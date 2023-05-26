@@ -72,6 +72,12 @@ public class QuoridorFX extends Application {
         for (int row = 0; row < 9 - 1; row++) {
             for (int col = 0; col < 9; col++) {
                 horizontalLines[row][col] = createHorizontalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
+                horizontalLines[row][col].strokeProperty().addListener((observable, oldValue, newValue) -> {
+                    if (!newValue.equals(Color.BLACK)) {
+                        // Line color changed, update the current player
+                        currentPlayer = (currentPlayer + 1) % numPlayers;
+                    }
+                });
                 root.getChildren().add(horizontalLines[row][col]);
             }
         }
