@@ -121,6 +121,12 @@ public class QuoridorFX extends Application {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9 - 1; col++) {
                 verticalLines[row][col]= createVerticalLine(col, row, graph, pawnlist);
+                verticalLines[row][col].strokeProperty().addListener((observable, oldValue, newValue) -> {
+                    if (!newValue.equals(Color.BLACK)) {
+                        // Line color changed, update the current player
+                        currentPlayer = (currentPlayer + 1) % numPlayers;
+                    }
+                });
                 root.getChildren().add(verticalLines[row][col]);
             }
         }
@@ -552,11 +558,11 @@ public class QuoridorFX extends Application {
 
             FileInputStream fileInputStream = new FileInputStream(fichier);
             DataInputStream dataInputStream = new DataInputStream(fileInputStream);
-            int entierLu = dataInputStream.readInt();
+            int nbWalls = dataInputStream.readInt();
             dataInputStream.close();
             fileInputStream.close();
             
-            return entierLu;
+            return nbWalls;
         } catch (IOException e) {
             e.printStackTrace();
             return -1;

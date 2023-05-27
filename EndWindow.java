@@ -41,7 +41,7 @@ public class EndWindow extends Application {
         Scene scene = new Scene(layout, 300, 200);
 
         // Configuration de la fenetre principale
-        primaryStage.setTitle("Nouvelle Fenetre");
+        primaryStage.setTitle("End");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
