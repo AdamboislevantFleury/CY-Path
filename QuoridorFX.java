@@ -22,43 +22,59 @@ import javafx.stage.Stage;
 /**
  * @author CY-Path Group 15
  * @version 1.0
+ * This class is the <b> main function </b> of the project.
  */
 
 public class QuoridorFX extends Application {
 
     /**
-     * @param TILE_SIZE is the size of each tile on the board.
-     *
-     * @param numPlayers is the number of players chosen by the player at the beginning of the game.
-     * @param currentPlayers is the current pawn playing
-     * @param currentRow is the row the chosen pawn is in
-     * @param currentCol is the column the chosen pawn is in
-     *
-     * @param horizontalBarriers are the barriers used horizontally
-     * @param verticalBarriers are the barriers used vertically
-     *
-     * @param tokens creates the board with circle tiles
-     * @param tiles are used to create the board
-     *
-     * @param pawnList is the liste of players (e.g. if there are 2 players, there will be pawnP1 and pawnP2 in the list.
-     *
-     * This class is the <b> main function </b> of the project.
+     * Size of each tile on the board.
      */
-
     private static final int TILE_SIZE = 50;
-	
+
+    /**
+     * Number of players chosen by the user at the beginning of the game.
+     */
 	protected int numPlayers;
-	protected int currentPlayer;
+
+    /**
+     * Current pawn playing
+     */
+    protected int currentPlayer;
+
+    /**
+     * The row the chosen pawn is in
+     */
     protected int[] currentRow;
+
+    /**
+     * The column the chosen pawn is in
+     */
     protected int[] currentCol;
 
-    
+    /**
+     * The barriers used horizontally
+     */
     private boolean[][] horizontalBarriers = new boolean[9 - 1][9];
+
+    /**
+     * The barriers used vertically
+     */
     private boolean[][] verticalBarriers = new boolean[9][9 - 1];
-    
-    
+
+    /**
+     * Creates the board with circle tiles
+     */
     protected Circle[] tokens;
+
+    /**
+     * Used to create the board with circle tiles.
+     */
     private Circle[][] tiles;
+
+    /**
+     * List of players (e.g. if there are 2 players, there will be pawnP1 and pawnP2 in the list.
+     */
     public List<Pawn> pawnlist = new ArrayList<Pawn>();
 
     @Override
@@ -364,7 +380,7 @@ public class QuoridorFX extends Application {
     }
 
     /**
-     * this methode makes sure the pawn doesn't go outside the board
+     * This methode makes sure the pawn doesn't go outside the board
      * @param row is the row the pawn is in
      * @param col is the col the pawn is in
      * @return if the move is valid or not
@@ -372,7 +388,7 @@ public class QuoridorFX extends Application {
     protected boolean isValidMove(int row, int col) {
         return row >= 0 && row < 9 && col >= 0 && col < 9;
     }
-    
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -437,7 +453,7 @@ public class QuoridorFX extends Application {
     }
 
     /**
-     * This method is to terminate the game
+     * This method terminates the game.
      */
     private void end() {
     	EndWindow win = new EndWindow();
@@ -475,6 +491,10 @@ public class QuoridorFX extends Application {
 		//else, the graph is changed
 		return 0;
     }
+
+    /**
+     * This method allows the creation of horizontal line as barriers
+     */
     private Line createHorizontalLine(int col, int row, Graph graph, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {
         Line horizontalLine = new Line(col * TILE_SIZE-10, (row + 1) * TILE_SIZE+10, (col + 1) * TILE_SIZE-10, (row + 1) * TILE_SIZE+10);
         horizontalLine.setStroke(horizontalBarriers[row][col] ? Color.RED : Color.BLACK);
@@ -492,6 +512,9 @@ public class QuoridorFX extends Application {
         return horizontalLine;
     }
 
+    /**
+     * This method allows the creation of vertical line as barriers
+     */
     private Line createVerticalLine(int col, int row, Graph graph, List<Pawn>pawnlist, int currentPlayer, int numPlayers ) {
         Line verticalLine = new Line((col + 1) * TILE_SIZE-10, row * TILE_SIZE+10, (col + 1) * TILE_SIZE-10, (row + 1) * TILE_SIZE+10);
         verticalLine.setStroke(verticalBarriers[row][col] ? Color.RED : Color.BLACK);

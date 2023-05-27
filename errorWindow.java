@@ -23,6 +23,9 @@ public class errorWindow extends Application {
     }
 
     @Override
+    /**
+     * Display error message.
+     */
     public void start(Stage primaryStage) {
     	Button closeButton = new Button("Close");
 

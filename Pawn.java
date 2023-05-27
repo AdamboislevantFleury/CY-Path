@@ -14,13 +14,21 @@ import java.util.List;
 public class Pawn extends QuoridorFX{
 
 	/**
-	 * @param currentPosition is the node where the pawn is
-	 * @param goal is a list of Nodes where the pawn wins
+	 * The node where the pawn is
 	 */
-
 	private Node currentPosition;
+
+	/**
+	 * List of winning nodes. If a pawn moves to this node, it wins.
+	 */
 	List<Node> goal = new ArrayList <Node> ();
 	//constructor
+
+	/**
+	 * This method constructs the pawn
+	 * @param initialPosition is the initial position of the pawn
+	 * @param goal is the list of position where the pawn can win
+	 */
     public Pawn(Node initialPosition, List<Node> goal) {
         this.currentPosition = initialPosition;
         this.goal=goal;
@@ -44,6 +52,7 @@ public class Pawn extends QuoridorFX{
     //getter
 
 	/**
+	 * Get the current position of the pawn.
 	 * @return the current position of the node.
 	 */
     public Node getCurrentPosition() {
@@ -51,7 +60,7 @@ public class Pawn extends QuoridorFX{
     }
 
 	/**
-	 * check if the pawn is on a node that makes the pawn wins the game.
+	 * Check if the pawn is on a node that makes the pawn wins the game.
 	 * @return boolean to signify winning of the game or not.
 	 */
     public boolean hasWon() {

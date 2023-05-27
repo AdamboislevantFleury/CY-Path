@@ -5,14 +5,15 @@ package cypath;
  * @author CY-Path Group 15
  * @version 1.0
  * 
- * The class <b> Barrier </b> remove edges between 2 nodes in parameters. Barrier is an abstract object. We cannot instance it.
+ * The class <b> Barrier </b> is an abstract object. We cannot instance it.
  *
  */
 
 public class Barrier {
 
     /**
-     * @param graph is an instance of the class graph. It represent a 9x9 matrix which is the game plate.
+     * This method removes an edge between 2 nodes.
+     * @param graph is an instance of the class graph. It represents a 9x9 matrix which is the game plate.
      * @param node1 is the first node of the graph "graph"
      * @param node2 is the second node of the graph "graph"
      */

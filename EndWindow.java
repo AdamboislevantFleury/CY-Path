@@ -21,6 +21,9 @@ public class EndWindow extends Application {
     }
 
     @Override
+    /**
+     * Display end game message to the user.
+     */
     public void start(Stage primaryStage) {
         // Creation du texte
         Label label = new Label("La Partie est terminee!");

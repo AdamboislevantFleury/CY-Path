@@ -13,18 +13,32 @@ import java.util.List;
 public class Node {
 
     /**
-     * @param isTaken is a boolean variable which is true if a pawn is at the matching position
-     * @param x is an integer value. This is the first coordinate of the node in the matrix
-     * @param y is an integer value. This is the first coordinate of the node in the matrix
-     * @param neighbors is a list of nodes. It contains all the nodes at a distance of 1 from the node. An edge must exist between a node an its neighbors.
-     *
+     * Boolean variable which is true if a pawn is at the matching position
      */
-	public boolean isTaken;
-	private int x;
+    public boolean isTaken;
+
+    /**
+     * Integer value. This is the first coordinate of the node in the matrix
+     */
+    private int x;
+
+    /**
+     * Integer value. This is the first coordinate of the node in the matrix
+     */
     private int y;
+
+    /**
+     * List of nodes. It contains all the nodes at a distance of 1 from the node. An edge must exist between a node and its neighbors.
+     */
     private List<Node> neighbors;
     
     //constructor
+
+    /**
+     * This method creates a new node with given
+     * @param x integer value, 1st coordinate of the node
+     * @param y interger value, 2nd coordinate of the node
+     */
     public Node(int x, int y) {
         this.x = x; //x
         this.y = y; //y
@@ -33,16 +47,24 @@ public class Node {
     }
     //getters
 
+    /**
+     * Getter X
+     * @return value of the x coordinate
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Getter Y
+     * @return value of the y coordinate
+     */
     public int getY() {
         return y;
     }
 
     /**
-     *
+     * This method give a list of all neighbors
      * @return the list of neighbors
      */
     public List<Node> getNeighbors() {
@@ -58,6 +80,7 @@ public class Node {
     }
     
     //equals method
+
     public boolean equals(Object obj) {
     	if (obj instanceof Node) {
     		Node n = (Node)obj;

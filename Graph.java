@@ -2,6 +2,7 @@ package cypath;
 /**
  * @author CY-Path Group 15
  * @version 1.0
+ * This class contains method to create the board.
 */
 
 import java.util.ArrayList;
@@ -13,21 +14,21 @@ public class Graph {
 
      /**
       * @param nodes is a list of nodes of the class Node.
-      * This class contains methods to create the board.
+      * It is the list of all nodes in the board with their coordinates.
       *
       */
 	private List<Node> nodes;
 	//constructor
 
     /**
-     * contructor for the graph.
+     * Constructor for the graph.
      */
     public Graph() {
         nodes = new ArrayList<>();
     }
 
     /**
-     * add nodes in the list of nodes of the graph.
+     * Add nodes in the list of nodes of the graph.
      * @param node is a given node
      */
     public void addNode(Node node) {
@@ -35,9 +36,9 @@ public class Graph {
     }
 
     /**
-     * add an edge between 2 chosen nodes, and make them neighbors.
-     * @param node1 is the first chosen node
-     * @param node2 is the second chose node
+     * Add an edge between 2 chosen nodes, and make them neighbors.
+     * @param node1 is the first chosen node.
+     * @param node2 is the second chose node.
      */
     public void addEdge(Node node1, Node node2) { //adding an edge between two nodes is making 2 nodes neighbors from each other.
         node1.addNeighbor(node2); 
@@ -47,8 +48,8 @@ public class Graph {
     }
     //getters
     /**
-     * Method getNeighbors return a list of neighbors of the node in parameters
-     * @param node in parameter
+     * Method getNeighbors return a list of neighbors of the node in parameters.
+     * @param node in parameter.
      * @return the list of the node's neighbors.
      */
     public List<Node> getNeighbors(Node node) {
@@ -56,6 +57,7 @@ public class Graph {
     }
 
     /**
+     * This method gives the list of all the nodes on a certain graph.
      * @return a list of the nodes of the graph.
      */
     public List<Node> getNodes() {
