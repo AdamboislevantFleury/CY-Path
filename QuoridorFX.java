@@ -1,5 +1,6 @@
 package cypath;
 import java.util.ArrayList;
+import java.io.*;
 
 import java.util.List;
 
@@ -51,6 +52,7 @@ public class QuoridorFX extends Application {
         stackPane.getChildren().addAll(gridPane, root);
         tiles = new Circle[9][9];
         
+        
 
         // Add nodes representing intersections
         for (int i = 0; i < 9; i++) {
@@ -71,7 +73,7 @@ public class QuoridorFX extends Application {
         Line[][] horizontalLines = new Line[8][9];
         for (int row = 0; row < 9 - 1; row++) {
             for (int col = 0; col < 9; col++) {
-                horizontalLines[row][col] = createHorizontalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
+                horizontalLines[row][col] = createHorizontalLine(col, row, graph, pawnlist);
                 horizontalLines[row][col].strokeProperty().addListener((observable, oldValue, newValue) -> {
                     if (!newValue.equals(Color.BLACK)) {
                         // Line color changed, update the current player
@@ -84,7 +86,7 @@ public class QuoridorFX extends Application {
         Line[][] verticalLines = new Line[9][8];
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9 - 1; col++) {
-                verticalLines[row][col]= createVerticalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
+                verticalLines[row][col]= createVerticalLine(col, row, graph, pawnlist);
                 root.getChildren().add(verticalLines[row][col]);
             }
         }
@@ -196,7 +198,6 @@ public class QuoridorFX extends Application {
                     switch (currentPlayer) {
 		            case 0: //use the move function to move the pawn on the class and on the game board
 		            	result=pawnP1.move(graph, 1, currentRow[0],currentCol[0],direction);//if the function return 0, move on the same direction.
-		            	
 		            	break;
 		            case 1:
 		            	result=pawnP2.move(graph, 1, currentRow[1],currentCol[1],direction);
@@ -240,7 +241,6 @@ public class QuoridorFX extends Application {
 		            switch (currentPlayer) {
 		            case 0:
 		            	result=pawnP1.move(graph, 2,currentRow[0],currentCol[0], direction);
-		            	graph.printGraph();
 		            	break;
 		            case 1:
 		            	result=pawnP2.move(graph, 2,currentRow[1],currentCol[1], direction);
@@ -344,9 +344,11 @@ public class QuoridorFX extends Application {
             alert.showAndWait();
             ButtonType selectedButton = alert.getResult();
             if (selectedButton == twoPlayersButton) {
-                return 2;
+            	writeFile(0);
+            	return 2;
             } else if (selectedButton == fourPlayersButton) {
-                return 4;
+            	writeFile(0);
+            	return 4;
             } else if (selectedButton == cancelButton) {
             	Platform.exit();
                 System.exit(0);
@@ -385,33 +387,33 @@ public class QuoridorFX extends Application {
     	Stage primaryStage = new Stage();
         win.start(primaryStage);
     }
-    public static int createWall(Graph graph, int x1, int y1, int x2, int y2, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {
+    public static int createWall(Graph graph, int x1, int y1, int x2, int y2, List<Pawn>pawnlist) {
 		
 		//System.out.println("Suppression entre "+x1+" : "+y1+" et :"+x2+" : "+y2);
 		Barrier.removeEdge(graph, getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
 		//graph.printGraph();
 		for (int i=0; i<pawnlist.size(); i++) {
 			Pawn currentPawn=pawnlist.get(i);
-			if (currentPawn.checkWall(graph, currentPawn.goal)==false) { //check with the checkWall() method
-				System.out.println("Impossible move! ");
-				graph.printGraph();
+			if (currentPawn.checkWall(graph, currentPawn.goal)==false || readFile() >=20) { //check with the checkWall() method
+				error();
+				//graph.printGraph();
 				graph.addEdge(getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
-				graph.printGraph();
 				return 1;
 			}
 		}
 		//else, the graph is changed
 		return 0;
     }
-    private Line createHorizontalLine(int col, int row, Graph graph, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {
+    private Line createHorizontalLine(int col, int row, Graph graph, List<Pawn>pawnlist) {
         Line horizontalLine = new Line(col * TILE_SIZE-10, (row + 1) * TILE_SIZE+10, (col + 1) * TILE_SIZE-10, (row + 1) * TILE_SIZE+10);
         horizontalLine.setStroke(horizontalBarriers[row][col] ? Color.RED : Color.BLACK);
         horizontalLine.setStrokeWidth(4);
         horizontalLine.setOnMouseClicked(event -> {
-            System.out.println(col+" : "+(8-row));
+            //System.out.println(col+" : "+(8-row));
             if (horizontalBarriers[row][col]==false) {
-            	if(createWall(graph, col, 8-row, col, 8-row-1, pawnlist, currentPlayer, numPlayers)==0) {
-            		horizontalBarriers[row][col] = !horizontalBarriers[row][col];
+            	if(createWall(graph, col, 8-row, col, 8-row-1, pawnlist)==0) {
+            		horizontalBarriers[row][col] = true;
+            		writeFile(readFile()+1);
                     horizontalLine.setStroke(horizontalBarriers[row][col] ? Color.RED : Color.BLACK);
             	}
             }
@@ -420,21 +422,83 @@ public class QuoridorFX extends Application {
         return horizontalLine;
     }
 
-    private Line createVerticalLine(int col, int row, Graph graph, List<Pawn>pawnlist, int currentPlayer, int numPlayers ) {
+    private Line createVerticalLine(int col, int row, Graph graph, List<Pawn>pawnlist) {
         Line verticalLine = new Line((col + 1) * TILE_SIZE-10, row * TILE_SIZE+10, (col + 1) * TILE_SIZE-10, (row + 1) * TILE_SIZE+10);
         verticalLine.setStroke(verticalBarriers[row][col] ? Color.RED : Color.BLACK);
         verticalLine.setStrokeWidth(4);
         verticalLine.setOnMouseClicked(event -> {
-        	System.out.println(col+" : "+(8-row));
+        	//System.out.println(col+" : "+(8-row));
         	if (verticalBarriers[row][col]==false) {
-        		if (createWall(graph, col, 8-row, col+1, 8-row, pawnlist, currentPlayer, numPlayers)==0) {
+        		if (createWall(graph, col, 8-row, col+1, 8-row, pawnlist)==0) {
         			verticalBarriers[row][col] = true;
+        			writeFile(readFile()+1);
                     verticalLine.setStroke(verticalBarriers[row][col] ? Color.RED : Color.BLACK);
         		}
         	}
             
         });
         return verticalLine;
+    }
+    
+    
+    private static void writeFile(int content) {
+    	// Écriture dans un fichier
+        try {
+            // Création de l'objet File avec le chemin du fichier
+            File fichier = new File("walls.txt");
+
+            // Création de l'objet FileOutputStream avec le fichier
+            FileOutputStream fileOutputStream = new FileOutputStream(fichier);
+
+            // Création de l'objet DataOutputStream pour écrire dans le fichier
+            DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+
+            // Écriture d'un entier dans le fichier
+            
+            dataOutputStream.writeInt(content);
+
+            // Fermeture des flux
+            dataOutputStream.close();
+            fileOutputStream.close();
+
+            //System.out.println("Écriture dans le fichier terminée !");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private static int readFile() {
+    	// Lecture depuis un fichier (inchangé)
+    	try {
+            // Création de l'objet File avec le chemin du fichier
+            File fichier = new File("walls.txt");
+
+            // Création de l'objet FileInputStream avec le fichier
+            FileInputStream fileInputStream = new FileInputStream(fichier);
+
+            // Création de l'objet DataInputStream pour lire depuis le fichier
+            DataInputStream dataInputStream = new DataInputStream(fileInputStream);
+
+            // Lecture de l'entier depuis le fichier
+            int entierLu = dataInputStream.readInt();
+            
+
+            // Fermeture des flux
+            dataInputStream.close();
+            fileInputStream.close();
+            
+
+            //System.out.println("Lecture du fichier terminée !");
+            return entierLu;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
+    protected static void error() {
+    	errorWindow win = new errorWindow();
+    	Stage primaryStage = new Stage();
+        win.start(primaryStage);
     }
     
 }

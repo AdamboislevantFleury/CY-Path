@@ -29,8 +29,8 @@ public class Graph {
     public void addEdge(Node node1, Node node2) { //adding an edge between two nodes is making 2 nodes neighbors from each other.
         node1.addNeighbor(node2); 
         node2.addNeighbor(node1);
-        System.out.println("Edge added between (" + node1.getX() + ", " + node1.getY() +
-                ") and (" + node2.getX() + ", " + node2.getY() + ")");
+        //System.out.println("Edge added between (" + node1.getX() + ", " + node1.getY() +
+                //") and (" + node2.getX() + ", " + node2.getY() + ")");
     }
     //getters
     public List<Node> getNeighbors(Node node) {

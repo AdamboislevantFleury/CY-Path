@@ -1,10 +1,7 @@
 package cypath;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
-import javafx.scene.input.KeyCode;
-import javafx.scene.shape.Circle;
+import java.util.List;
 
 /**
  * 
@@ -31,9 +28,9 @@ public class Pawn extends QuoridorFX{
             currentPosition.isTaken=false; //the currentPosition is no more taken by the pawn
             destination.isTaken=true; //the destination becomes taken
         	currentPosition = destination; //the pawns moves and take the destination as current position
-            System.out.println("Moved to (" + destination.getX() + ", " + destination.getY() + ")");
+            //System.out.println("Moved to (" + destination.getX() + ", " + destination.getY() + ")");
         } else { //if the node is not a neighbor: error message
-            System.out.println("Invalid move. Cannot move to (" + destination.getX() + ", " + destination.getY() + ")");
+            //System.out.println("Invalid move. Cannot move to (" + destination.getX() + ", " + destination.getY() + ")");
         }
     }
     //getter
@@ -55,8 +52,6 @@ public class Pawn extends QuoridorFX{
 		result[0]=row;
 		result[1]=col;
 		List<Node> neighbors = currentPosition.getNeighbors();
-		System.out.println("Test");
-		graph.printGraph();
 		//initialize a list of neighbors
 		switch(answer) {
 		case 1:
@@ -94,7 +89,7 @@ public class Pawn extends QuoridorFX{
 				}
 			}
 			else {
-				System.out.println("Impossible move ! Please try again"); //invalid choice
+				error(); //invalid choice
 				return 1;
 			}
 			break;
@@ -130,7 +125,7 @@ public class Pawn extends QuoridorFX{
 				}
 			}
 			else {
-				System.out.println("Impossible move ! Please try again");
+				error();
 				return 1;
 			}
 			break;
@@ -166,7 +161,7 @@ public class Pawn extends QuoridorFX{
 				}
 			}
 			else {
-				System.out.println("Impossible move ! Please try again");
+				error();
 				return 1;
 			}
 			break;
@@ -203,12 +198,12 @@ public class Pawn extends QuoridorFX{
 				}
 			}
 			else {
-				System.out.println("Impossible move ! Please try again");
+				error();
 				return 1;
 			}
 			break;
 		default:
-			System.out.println("Incorrect value");
+			error();
 			return 1;
 		}
 		return 1;
@@ -232,37 +227,10 @@ public class Pawn extends QuoridorFX{
     				return true;
     			}
     		}
-    		System.out.println("(" + node.getX() + ", " + node.getY() + ")");
+    		//System.out.println("(" + node.getX() + ", " + node.getY() + ")");
 	
     	}
     	return false;
     	
-    }
-    
-    
-    public int play(int nbBarriers, Graph graph, List<Node>goal) {
-    	int answer;
-		if (nbBarriers<=20) {//check if there's less than 20 barriers.
-			System.out.println("Move (1), Place wall (2)");
-    		Scanner sc = new Scanner(System.in);
-    		answer = sc.nextInt();
-		}
-		else {
-			answer = 1; //else, the player can only move his pawn.
-		}
-		switch (answer) {
-		case 1:
-			//this.move(graph,1);
-			break;
-		case 2:
-			//this.createWall(graph, goal);
-			nbBarriers++;
-			break;
-		default:
-			System.out.println("Incorrect value");
-			this.play(nbBarriers, graph, goal);
-			break;
-		}
-		return nbBarriers;
     }
 }
