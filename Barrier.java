@@ -21,10 +21,8 @@ public class Barrier {
         if (graph.getNeighbors(node1).contains(node2)) { //check if node1 is a neighbor of node2
             graph.getNeighbors(node1).remove(node2); //remove the edge between node1 and node2
             graph.getNeighbors(node2).remove(node1); //remove the edge between node2 and node1
-            System.out.println("Edge removed between (" + node1.getX() + ", " + node1.getY() +
-                    ") and (" + node2.getX() + ", " + node2.getY() + ")"); //display result
-        } else {
-            System.out.println("Invalid edge removal!"); //display error message
+            //System.out.println("Edge removed between (" + node1.getX() + ", " + node1.getY() +
+                    //") and (" + node2.getX() + ", " + node2.getY() + ")"); //display result
         }
     }
 }
