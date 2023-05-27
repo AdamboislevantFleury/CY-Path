@@ -531,5 +531,10 @@ public class QuoridorFX extends Application {
         });
         return verticalLine;
     }
+    protected static void error() {
+    	errorWindow win = new errorWindow();
+    	Stage primaryStage = new Stage();
+        win.start(primaryStage);
+    }
     
 }
