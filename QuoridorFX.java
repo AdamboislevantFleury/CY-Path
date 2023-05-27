@@ -337,6 +337,7 @@ public class QuoridorFX extends Application {
         Scene scene = new Scene(stackPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("CY-PATH");
+        primaryStage.setResizable(false);
         primaryStage.show();
         
         gridPane.requestFocus();
