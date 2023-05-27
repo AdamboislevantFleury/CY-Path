@@ -25,6 +25,6 @@ If the player chooses to place a barrier, they only have to click on the space b
 
 # Improvements
 
-- Using a global servor so players can play on different machines
+- Using a global servor so people can play on different machines
 - Interface more user friendly and more spaced
 - Giving the possibility to the player to choose the color of their pawn and their player's name
