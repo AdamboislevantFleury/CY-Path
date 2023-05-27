@@ -7,13 +7,17 @@ import java.util.List;
  * 
  * @author CY-Path Group 15
  * @version 1.0
- * @param currentPosition is the node where the pawn is
- * @param goal is a list of Nodes where the pawn wins
  * 
  * This class implements several methods to displace the pawn through the graph, to check if the player has won, and to place a wall.
  *
  */
 public class Pawn extends QuoridorFX{
+
+	/**
+	 * @param currentPosition is the node where the pawn is
+	 * @param goal is a list of Nodes where the pawn wins
+	 */
+
 	private Node currentPosition;
 	List<Node> goal = new ArrayList <Node> ();
 	//constructor
@@ -21,7 +25,11 @@ public class Pawn extends QuoridorFX{
         this.currentPosition = initialPosition;
         this.goal=goal;
     }
-    //moveTo function aims at move the pawn to the destination in parameter.
+
+	/**
+	 * moveTo function aims at move the pawn to the destination in parameter.
+	 * @param destination gives the coordinates in the board where the pawn has to go.
+	 */
     public void moveTo(Node destination) {
         List<Node> neighbors = currentPosition.getNeighbors(); //List of neighbors of the node where the pawn is.
         if (neighbors.contains(destination)) { //Check if the node in parameter is a neighbor of the current position of the pawn.
@@ -34,10 +42,18 @@ public class Pawn extends QuoridorFX{
         }
     }
     //getter
+
+	/**
+	 * @return the current position of the node.
+	 */
     public Node getCurrentPosition() {
         return currentPosition;
     }
-    //check if the pawn is on a node of victory
+
+	/**
+	 * check if the pawn is on a node that makes the pawn wins the game.
+	 * @return boolean to signify winning of the game or not.
+	 */
     public boolean hasWon() {
 		for (int i = 0; i<goal.size();i++) { //browse the list of nodes of victory
 			if (this.getCurrentPosition().equals(goal.get(i))) { //if we find a node that check with the current position, the player has won.
@@ -46,7 +62,16 @@ public class Pawn extends QuoridorFX{
 		}
 		return false;
 	}
-    //When the player choose to move his pawn.
+
+	/**
+	 * When the player choose to move his pawn.
+	 * @param graph is the chosen board
+	 * @param answer is the destination
+	 * @param row is the given row
+	 * @param col is the given col
+	 * @param result is the reulting coordinates
+	 * @return the moves pawn.
+	 */
     public int move(Graph graph, int answer, int row, int col, int[] result) {
 		Node destination;
 		result[0]=row;
@@ -209,6 +234,13 @@ public class Pawn extends QuoridorFX{
 		return 1;
     }
 
+	/**
+	 * getNodeAt gives the node with given coordinated in a certain graph.
+	 * @param graph is the graph of the board used.
+	 * @param x is the coordinate x
+	 * @param y is the coordinate y
+	 * @return the node corresponding at the given coordinates in paramaters.
+	 */
     public static Node getNodeAt(Graph graph, int x, int y) {
         for (Node node : graph.getNodes()) {
             if (node.getX() == x && node.getY() == y) {
@@ -217,7 +249,12 @@ public class Pawn extends QuoridorFX{
         }
         return null;
     }
-    //Check if a wall placement is okay
+	/**
+	 * Check if a wall placement is okay
+	 * @param graph is the graph used for the board
+	 * @param goal is the list of nodes if moved to make the pawn wins.
+	 * @return true if wall placement is possible, else returns false.
+	 */
     public boolean checkWall(Graph graph, List<Node> goal) {
     	Node startNode = this.currentPosition;
     	List<Node> visitedNodes = graph.breadthFirstTraversal(startNode); //list of nodes visited by the BFS

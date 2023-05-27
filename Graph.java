@@ -2,13 +2,7 @@ package cypath;
 /**
  * @author CY-Path Group 15
  * @version 1.0
- * @param nodes is a list of nodes of the class Node. See class Node documentation for more details.
- * 
- * This class contains methods which add nodes and edges to the graph. Method getNeighbors return a list of neighbors of the node in parameters. getNodes() returns a list of the nodes of the graph.
- * Print Graph displays all the relations between the nodes of the graph.
- * breadthFirstTraversal() is a BFS algorithm through the graph in parameters.
- * 
- */
+*/
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -16,16 +10,35 @@ import java.util.List;
 import java.util.Queue;
 
 public class Graph {
+
+     /**
+      * @param nodes is a list of nodes of the class Node.
+      * This class contains methods to create the board.
+      *
+      */
 	private List<Node> nodes;
 	//constructor
+
+    /**
+     * contructor for the graph.
+     */
     public Graph() {
         nodes = new ArrayList<>();
     }
 
+    /**
+     * add nodes in the list of nodes of the graph.
+     * @param node is a given node
+     */
     public void addNode(Node node) {
-        nodes.add(node);//add the node in parameter in the list of nodes of the graph
+        nodes.add(node);
     }
 
+    /**
+     * add an edge between 2 chosen nodes, and make them neighbors.
+     * @param node1 is the first chosen node
+     * @param node2 is the second chose node
+     */
     public void addEdge(Node node1, Node node2) { //adding an edge between two nodes is making 2 nodes neighbors from each other.
         node1.addNeighbor(node2); 
         node2.addNeighbor(node1);
@@ -33,14 +46,25 @@ public class Graph {
                 //") and (" + node2.getX() + ", " + node2.getY() + ")");
     }
     //getters
+    /**
+     * Method getNeighbors return a list of neighbors of the node in parameters
+     * @param node in parameter
+     * @return the list of the node's neighbors.
+     */
     public List<Node> getNeighbors(Node node) {
         return node.getNeighbors();
     }
-    
+
+    /**
+     * @return a list of the nodes of the graph.
+     */
     public List<Node> getNodes() {
         return nodes;
     }
-    //display graph
+
+    /**
+     * printGraph displays all the relations between the nodes of the graph.
+     */
     public void printGraph() {
         for (Node node : nodes) {
             System.out.print("Node (" + node.getX() + ", " + node.getY() + "): "); //browse all the nodes of the graph
@@ -50,7 +74,12 @@ public class Graph {
             System.out.println();
         }
     }
-    
+
+    /**
+     * Breadth First Traversal algorithm
+     * @param startNode is the chosen starting node
+     * @return the list of visited node
+     */
     public List<Node> breadthFirstTraversal(Node startNode) { //BFS Algorithm
         List<Node> visited = new ArrayList<>(); //list of visited nodes
         Queue<Node> queue = new LinkedList<>(); //queue of visited nodes

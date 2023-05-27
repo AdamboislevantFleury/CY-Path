@@ -8,6 +8,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * @author CY-Path groupe 15
+ * @version 1.0
+ *
+ * This class terminates the game.
+ */
+
 public class EndWindow extends Application {
 	public static void main(String[] args) {
         launch(args);
@@ -15,23 +22,23 @@ public class EndWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Création du texte
-        Label label = new Label("La Partie est terminée!");
+        // Creation du texte
+        Label label = new Label("La Partie est terminee!");
 
-        // Création du bouton
+        // Creation du bouton
         Button closeButton = new Button("Fermer le programme");
         closeButton.setOnAction(e -> System.exit(0)); // Ferme le programme lorsqu'on clique sur le bouton
 
-        // Création du layout
+        // Creation du layout
         VBox layout = new VBox(10);
         layout.getChildren().addAll(label, closeButton);
         layout.setAlignment(Pos.CENTER);
 
-        // Création de la scène
+        // Creation de la scene
         Scene scene = new Scene(layout, 300, 200);
 
-        // Configuration de la fenêtre principale
-        primaryStage.setTitle("Nouvelle Fenêtre");
+        // Configuration de la fenetre principale
+        primaryStage.setTitle("Nouvelle Fenetre");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

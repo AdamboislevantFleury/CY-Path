@@ -9,6 +9,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * @author CY-Path groupe 15
+ * @version 1.0
+ *
+ * This class creates error message if needed.
+ */
+
+
 public class errorWindow extends Application {
 	public static void main(String[] args) {
         launch(args);
@@ -25,7 +33,7 @@ public class errorWindow extends Application {
 
         Scene scene = new Scene(vbox, 200, 150);
 
-        // Configure la fenêtre modale
+        // Configure la fenetre modale
         Stage alertWindow = new Stage();
         alertWindow.initModality(Modality.APPLICATION_MODAL);
         alertWindow.setTitle("Error");

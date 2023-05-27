@@ -3,19 +3,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author CY-Path Group 15
  * @version 1.0
- * 
- * @param isTaken is a boolean variable which is true if a pawn is at the matching position
- * @param x is an integer value. This is the first coordinate of the node in the matrix
- * @param y is an integer value. This is the first coordinate of the node in the matrix
- * @param neighbors is a list of nodes. It contains all the nodes at a distance of 1 from the node. An edge must exist between a node an its neighbors.
- * 
- * Class <b> Node </b> describes a the structure of node into a graph. Method addNeighbor() adds a new node in the list of the neighbors.
+ * Class <b> Node </b> describes the structure of node into a graph.
  *
  */
+
 public class Node {
+
+    /**
+     * @param isTaken is a boolean variable which is true if a pawn is at the matching position
+     * @param x is an integer value. This is the first coordinate of the node in the matrix
+     * @param y is an integer value. This is the first coordinate of the node in the matrix
+     * @param neighbors is a list of nodes. It contains all the nodes at a distance of 1 from the node. An edge must exist between a node an its neighbors.
+     *
+     */
 	public boolean isTaken;
 	private int x;
     private int y;
@@ -38,10 +41,18 @@ public class Node {
         return y;
     }
 
+    /**
+     *
+     * @return the list of neighbors
+     */
     public List<Node> getNeighbors() {
         return neighbors;
     }
 
+    /**
+     * This method adds a given node to the list of neighbors
+     * @param neighbor is the node to add to the neighbor's list
+     */
     public void addNeighbor(Node neighbor) {
         neighbors.add(neighbor); //add the node neighbor to the list of neighbors.
     }
