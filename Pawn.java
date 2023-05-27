@@ -93,7 +93,6 @@ public class Pawn extends QuoridorFX{
 			if (neighbors.contains(destination)) { //check if the destination is possible
 				if (destination.isTaken==false) { //check if a pawn is already on the destination
 					this.moveTo(destination);
-					//System.out.println(result[0]+";"+result[1]);
 					result[0]=result[0]-1;
 					return 0;
 					
@@ -204,7 +203,6 @@ public class Pawn extends QuoridorFX{
 			if (neighbors.contains(destination)) {
 				if (destination.isTaken==false) {
 					this.moveTo(destination);
-					//System.out.println(result[0]+";"+result[1]);
 					result[0]=result[0]+1;
 					return 0;
 				}
@@ -273,7 +271,6 @@ public class Pawn extends QuoridorFX{
     				return true;
     			}
     		}
-    		//System.out.println("(" + node.getX() + ", " + node.getY() + ")");
 	
     	}
     	return false;

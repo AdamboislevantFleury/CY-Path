@@ -1,5 +1,6 @@
 package cypath;
 import java.util.ArrayList;
+import java.io.*;
 
 import java.util.List;
 
@@ -26,27 +27,21 @@ import javafx.stage.Stage;
  */
 
 public class QuoridorFX extends Application {
-
-    /**
+	
+	private static final int TILE_SIZE = 50;
+	
+	/**
      * Size of each tile on the board.
      */
-    private static final int TILE_SIZE = 50;
-
-    /**
-     * Number of players chosen by the user at the beginning of the game.
-     */
 	protected int numPlayers;
-
-    /**
+	/**
      * Current pawn playing
      */
-    protected int currentPlayer;
-
-    /**
+	protected int currentPlayer;
+	/**
      * The row the chosen pawn is in
      */
     protected int[] currentRow;
-
     /**
      * The column the chosen pawn is in
      */
@@ -56,22 +51,19 @@ public class QuoridorFX extends Application {
      * The barriers used horizontally
      */
     private boolean[][] horizontalBarriers = new boolean[9 - 1][9];
-
     /**
      * The barriers used vertically
      */
     private boolean[][] verticalBarriers = new boolean[9][9 - 1];
-
+    
     /**
-     * Creates the board with circle tiles
+     * Creates the pawns with circle tiles
      */
     protected Circle[] tokens;
-
     /**
      * Used to create the board with circle tiles.
      */
     private Circle[][] tiles;
-
     /**
      * List of players (e.g. if there are 2 players, there will be pawnP1 and pawnP2 in the list.
      */
@@ -94,6 +86,7 @@ public class QuoridorFX extends Application {
         stackPane.getChildren().addAll(gridPane, root);
         tiles = new Circle[9][9];
         
+        
 
         // Add nodes representing intersections
         for (int i = 0; i < 9; i++) {
@@ -114,7 +107,7 @@ public class QuoridorFX extends Application {
         Line[][] horizontalLines = new Line[8][9];
         for (int row = 0; row < 9 - 1; row++) {
             for (int col = 0; col < 9; col++) {
-                horizontalLines[row][col] = createHorizontalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
+                horizontalLines[row][col] = createHorizontalLine(col, row, graph, pawnlist);
                 horizontalLines[row][col].strokeProperty().addListener((observable, oldValue, newValue) -> {
                     if (!newValue.equals(Color.BLACK)) {
                         // Line color changed, update the current player
@@ -127,7 +120,7 @@ public class QuoridorFX extends Application {
         Line[][] verticalLines = new Line[9][8];
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9 - 1; col++) {
-                verticalLines[row][col]= createVerticalLine(col, row, graph, pawnlist, currentPlayer, numPlayers);
+                verticalLines[row][col]= createVerticalLine(col, row, graph, pawnlist);
                 root.getChildren().add(verticalLines[row][col]);
             }
         }
@@ -239,7 +232,6 @@ public class QuoridorFX extends Application {
                     switch (currentPlayer) {
 		            case 0: //use the move function to move the pawn on the class and on the game board
 		            	result=pawnP1.move(graph, 1, currentRow[0],currentCol[0],direction);//if the function return 0, move on the same direction.
-		            	
 		            	break;
 		            case 1:
 		            	result=pawnP2.move(graph, 1, currentRow[1],currentCol[1],direction);
@@ -283,7 +275,6 @@ public class QuoridorFX extends Application {
 		            switch (currentPlayer) {
 		            case 0:
 		            	result=pawnP1.move(graph, 2,currentRow[0],currentCol[0], direction);
-		            	graph.printGraph();
 		            	break;
 		            case 1:
 		            	result=pawnP2.move(graph, 2,currentRow[1],currentCol[1], direction);
@@ -344,7 +335,6 @@ public class QuoridorFX extends Application {
         
         gridPane.requestFocus();
     }
-
     /**
      * getNodeAt gives the node with given coordinated in a certain graph.
      * @param graph is the graph of the board used.
@@ -360,7 +350,6 @@ public class QuoridorFX extends Application {
         }
         return null;
     }
-
     /**
      * This method move the pawn (represented by a token) to a certain position defined by the user.
      * @param player is the current player
@@ -378,21 +367,20 @@ public class QuoridorFX extends Application {
             //System.out.println("Next turn: player:"+currentPlayer);
         }
     }
-
     /**
      * This methode makes sure the pawn doesn't go outside the board
      * @param row is the row the pawn is in
      * @param col is the col the pawn is in
      * @return if the move is valid or not
      */
+
     protected boolean isValidMove(int row, int col) {
         return row >= 0 && row < 9 && col >= 0 && col < 9;
     }
-
+    
     public static void main(String[] args) {
         launch(args);
     }
-
     /**
      * This methode lets the players chose how many they are, either 2 or 4.
      * @return the number selected
@@ -413,16 +401,17 @@ public class QuoridorFX extends Application {
             alert.showAndWait();
             ButtonType selectedButton = alert.getResult();
             if (selectedButton == twoPlayersButton) {
-                return 2;
+            	writeFile(0);
+            	return 2;
             } else if (selectedButton == fourPlayersButton) {
-                return 4;
+            	writeFile(0);
+            	return 4;
             } else if (selectedButton == cancelButton) {
             	Platform.exit();
                 System.exit(0);
             }
         }
     }
-
     /**
      * This method allows pawn to go diagonally on the board under certain circumstances.
      */
@@ -451,16 +440,16 @@ public class QuoridorFX extends Application {
             }
         }
     }
-
     /**
      * This method terminates the game.
      */
+    
     private void end() {
     	EndWindow win = new EndWindow();
     	Stage primaryStage = new Stage();
         win.start(primaryStage);
     }
-
+    
     /**
      * This method creates barriers in the game when the player clicks between tiles.
      * @param graph is the board of the game
@@ -473,37 +462,36 @@ public class QuoridorFX extends Application {
      * @param numPlayers gives the number of players
      * @return the creation of the barrier in the game or an error message
      */
-    public static int createWall(Graph graph, int x1, int y1, int x2, int y2, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {
+    public static int createWall(Graph graph, int x1, int y1, int x2, int y2, List<Pawn>pawnlist) {
 		
 		//System.out.println("Suppression entre "+x1+" : "+y1+" et :"+x2+" : "+y2);
 		Barrier.removeEdge(graph, getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
 		//graph.printGraph();
 		for (int i=0; i<pawnlist.size(); i++) {
 			Pawn currentPawn=pawnlist.get(i);
-			if (currentPawn.checkWall(graph, currentPawn.goal)==false) { //check with the checkWall() method
-				System.out.println("Impossible move! ");
-				graph.printGraph();
+			if (currentPawn.checkWall(graph, currentPawn.goal)==false || readFile() >=20) { //check with the checkWall() method
+				error();
+				//graph.printGraph();
 				graph.addEdge(getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
-				graph.printGraph();
 				return 1;
 			}
 		}
 		//else, the graph is changed
 		return 0;
     }
-
     /**
      * This method allows the creation of horizontal line as barriers
      */
-    private Line createHorizontalLine(int col, int row, Graph graph, List<Pawn>pawnlist, int currentPlayer, int numPlayers) {
+    private Line createHorizontalLine(int col, int row, Graph graph, List<Pawn>pawnlist) {
         Line horizontalLine = new Line(col * TILE_SIZE-10, (row + 1) * TILE_SIZE+10, (col + 1) * TILE_SIZE-10, (row + 1) * TILE_SIZE+10);
         horizontalLine.setStroke(horizontalBarriers[row][col] ? Color.RED : Color.BLACK);
         horizontalLine.setStrokeWidth(4);
         horizontalLine.setOnMouseClicked(event -> {
-            System.out.println(col+" : "+(8-row));
+            //System.out.println(col+" : "+(8-row));
             if (horizontalBarriers[row][col]==false) {
-            	if(createWall(graph, col, 8-row, col, 8-row-1, pawnlist, currentPlayer, numPlayers)==0) {
-            		horizontalBarriers[row][col] = !horizontalBarriers[row][col];
+            	if(createWall(graph, col, 8-row, col, 8-row-1, pawnlist)==0) {
+            		horizontalBarriers[row][col] = true;
+            		writeFile(readFile()+1);
                     horizontalLine.setStroke(horizontalBarriers[row][col] ? Color.RED : Color.BLACK);
             	}
             }
@@ -511,19 +499,20 @@ public class QuoridorFX extends Application {
         });
         return horizontalLine;
     }
-
     /**
      * This method allows the creation of vertical line as barriers
      */
-    private Line createVerticalLine(int col, int row, Graph graph, List<Pawn>pawnlist, int currentPlayer, int numPlayers ) {
+
+    private Line createVerticalLine(int col, int row, Graph graph, List<Pawn>pawnlist) {
         Line verticalLine = new Line((col + 1) * TILE_SIZE-10, row * TILE_SIZE+10, (col + 1) * TILE_SIZE-10, (row + 1) * TILE_SIZE+10);
         verticalLine.setStroke(verticalBarriers[row][col] ? Color.RED : Color.BLACK);
         verticalLine.setStrokeWidth(4);
         verticalLine.setOnMouseClicked(event -> {
-        	System.out.println(col+" : "+(8-row));
+        	//System.out.println(col+" : "+(8-row));
         	if (verticalBarriers[row][col]==false) {
-        		if (createWall(graph, col, 8-row, col+1, 8-row, pawnlist, currentPlayer, numPlayers)==0) {
+        		if (createWall(graph, col, 8-row, col+1, 8-row, pawnlist)==0) {
         			verticalBarriers[row][col] = true;
+        			writeFile(readFile()+1);
                     verticalLine.setStroke(verticalBarriers[row][col] ? Color.RED : Color.BLACK);
         		}
         	}
@@ -531,6 +520,49 @@ public class QuoridorFX extends Application {
         });
         return verticalLine;
     }
+    
+    /**
+     * This method write an integer value in a file
+     */
+    private static void writeFile(int content) {
+        try {
+            File fichier = new File("walls.txt");
+
+            FileOutputStream fileOutputStream = new FileOutputStream(fichier);
+
+            DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+
+            
+            dataOutputStream.writeInt(content);
+
+            dataOutputStream.close();
+            fileOutputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * This method reads an integer value in a file
+     */
+    private static int readFile() {
+    	try {
+            
+            File fichier = new File("walls.txt");
+
+            FileInputStream fileInputStream = new FileInputStream(fichier);
+            DataInputStream dataInputStream = new DataInputStream(fileInputStream);
+            int entierLu = dataInputStream.readInt();
+            dataInputStream.close();
+            fileInputStream.close();
+            
+            return entierLu;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
     protected static void error() {
     	errorWindow win = new errorWindow();
     	Stage primaryStage = new Stage();
