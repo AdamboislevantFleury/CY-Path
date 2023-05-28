@@ -2,6 +2,8 @@
 
 This project is based on board game for 2 or 4 players. This is a strategy game where the goal is the be first place don the opposite line of beginning.
 
+All the documentation can be found in the cypath.zip file.
+
 The project was done as part of our 1st year final project at CY Tech engineering school.
 
 Done by group 15.
