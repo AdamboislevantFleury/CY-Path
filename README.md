@@ -9,7 +9,6 @@ Done by group 15.
 # Features
 
 - 2 or 4 players
-- Possibility to save the game and continue it later
 - Clickable placement of barriers
 - Possibility to go diagonally in case of a barrier right in front of the pawn and anoter pawn right behind it.
 
@@ -37,5 +36,6 @@ You can also launch the game through Eclipse or IntellijIDEA by running the Quor
 # Improvements
 
 - Using a global servor so people can play on different machines
+- Finishing and implementing the saving method so that players can save their game and continue it later
 - Interface more user friendly and more spaced
 - Giving the possibility to the player to choose the color of their pawn and their player's name
