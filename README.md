@@ -26,7 +26,11 @@ In case of a barrier in front of the pawn and another pawn behing it, a message 
 
 # How to launch the game
 
-You claunch the game in a termianl with the following command : java --module-path "%PATH_JAVAFX%" --add-modules javafx.controls,javafx.fxml, (...) -jar cy-path.jar where %PATH_JAVAFX% is the path to the JavaFX module in your machine.
+You claunch the game in a termianl with the following command : 
+```bash
+java --module-path "%PATH_JAVAFX%" --add-modules javafx.controls,javafx.fxml, (...) -jar cy-path.jar 
+``` where %PATH_JAVAFX% is the path to the JavaFX module in your machine.
+
 
 You can also launch the game through Eclipse or IntellijIDEA by running the QuoridorFX.java class. 
 
