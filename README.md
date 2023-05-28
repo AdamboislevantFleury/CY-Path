@@ -36,8 +36,6 @@ java --module-path "%PATH_JAVAFX%" --add-modules javafx.controls,javafx.fxml, (.
 where %PATH_JAVAFX% is the path to the JavaFX module in your machine.
 
 
-You can also launch the game through Eclipse or IntellijIDEA by running the QuoridorFX.java class. 
-
 # Improvements
 
 - Using a global servor so people can play on different machines
