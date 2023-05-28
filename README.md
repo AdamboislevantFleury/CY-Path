@@ -1,11 +1,10 @@
 # CYPATH-JAVA
 
 This project is based on board game for 2 or 4 players. This is a strategy game where the goal is the be first place don the opposite line of beginning.
-The project was done as part of our final year project.
 
-It is written using JAVA 18 and JavaFX.
+The project was done as part of our 1st year final project at CY Tech engineering school.
 
-Done by the group 15.
+Done by group 15.
 
 # Features
 
