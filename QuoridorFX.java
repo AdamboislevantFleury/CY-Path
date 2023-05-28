@@ -6,21 +6,15 @@ import java.util.List;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -32,10 +26,10 @@ import javafx.stage.Stage;
  * This class is the <b> main function </b> of the project.
  */
 
-public class QuoridorFX extends Application implements Serializable {
+public class QuoridorFX extends Application {
 	
 	private static final int TILE_SIZE = 50;
-
+	
 	/**
      * Size of each tile on the board.
      */
@@ -75,8 +69,6 @@ public class QuoridorFX extends Application implements Serializable {
      */
     public List<Pawn> pawnlist = new ArrayList<Pawn>();
 
-//    public int[][] wallsList
-
     @Override
     /**
      * Creates the board game and the players.
@@ -86,34 +78,15 @@ public class QuoridorFX extends Application implements Serializable {
     	Graph graph = new Graph();
     	
     	GridPane gridPane = new GridPane();
-        Button saveButton = new Button("Save");
-        /* saveButton.setOnAction(e -> {
-            Serialize serializer = new Serialize();
-            serializer.serialize(); // Call the serialize method
-        });*/
-        saveButton.setFocusTraversable(false); // Desactivate keyboard navigation for the button
-
-        HBox buttonBox = new HBox(10);
-        buttonBox.setAlignment(Pos.CENTER);
-        buttonBox.getChildren().addAll(saveButton);
-
-        gridPane.add(buttonBox, 0, 10);
-
         //gridPane.setPadding(new Insets(10));
         //gridPane.setHgap(10);
         //gridPane.setVgap(10);
         Group root = new Group();
-        StackPane stackPane = new StackPane();
+    	StackPane stackPane = new StackPane();
         stackPane.getChildren().addAll(gridPane, root);
         tiles = new Circle[9][9];
-
-        // Create a VBox to hold the GridPane and buttons
-        VBox vbox = new VBox();
-
-        // Add the StackPane to the VBox
-        vbox.getChildren().add(stackPane);
-        // Add the buttonBox to the VBox
-        vbox.getChildren().add(buttonBox);
+        
+        
 
         // Add nodes representing intersections
         for (int i = 0; i < 9; i++) {
@@ -258,119 +231,115 @@ public class QuoridorFX extends Application implements Serializable {
         
         int direction[]= new int[2];
         gridPane.setOnKeyPressed(event -> {
-            if (readFile("walls")%2==0) {
-                KeyCode keyCode = event.getCode();
-                int result=-1;
-                switch (keyCode) {
-                    case UP:
-                        switch (currentPlayer) {
-                            case 0: //use the move function to move the pawn on the class and on the game board
-                                result=pawnP1.move(graph, 1, currentRow[0],currentCol[0],direction);//if the function return 0, move on the same direction.
-                                break;
-                            case 1:
-                                result=pawnP2.move(graph, 1, currentRow[1],currentCol[1],direction);
-                                break;
-                            case 2:
-                                result=pawnP3.move(graph, 1,currentRow[2],currentCol[2], direction);
-                                break;
-                            case 3:
-                                result=pawnP4.move(graph, 1,currentRow[3],currentCol[3], direction);
-                                break;
-                        }
-                        //else: move following a diagonal
-                        if (result==0) {
-                            moveToken(currentPlayer, direction[0], direction[1], tokens);
-                        }
-                        break;
-                    case DOWN:
-                        //Same process for each direction
-                        switch (currentPlayer) {
-                            case 0:
-                                result=pawnP1.move(graph, 4,currentRow[0],currentCol[0], direction);
-                                break;
-                            case 1:
-                                result=pawnP2.move(graph, 4,currentRow[1],currentCol[1], direction);
-                                break;
-                            case 2:
-                                result=pawnP3.move(graph, 4,currentRow[2],currentCol[2], direction);
-                                break;
-                            case 3:
-                                result=pawnP4.move(graph, 4,currentRow[3],currentCol[3], direction);
-                                break;
-                        }
-
-                        if (result==0) {
-                            moveToken(currentPlayer, direction[0], direction[1], tokens);
-                        }
-
-                        break;
-                    case LEFT:
-                        //Same process
-                        switch (currentPlayer) {
-                            case 0:
-                                result=pawnP1.move(graph, 2,currentRow[0],currentCol[0], direction);
-                                break;
-                            case 1:
-                                result=pawnP2.move(graph, 2,currentRow[1],currentCol[1], direction);
-                                break;
-                            case 2:
-                                result=pawnP3.move(graph, 2,currentRow[2],currentCol[2], direction);
-                                break;
-                            case 3:
-                                result=pawnP4.move(graph, 2,currentRow[3],currentCol[3], direction);
-                                break;
-                        }
-                        if (result==0) {
-                            moveToken(currentPlayer, direction[0], direction[1], tokens);
-                        }
-
-                        break;
-                    case RIGHT:
-                        //Same process
-                        switch (currentPlayer) {
-                            case 0:
-                                result=pawnP1.move(graph, 3,currentRow[0],currentCol[0], direction);
-                                break;
-                            case 1:
-                                result=pawnP2.move(graph, 3,currentRow[1],currentCol[1], direction);
-                                break;
-                            case 2:
-                                result=pawnP3.move(graph, 3,currentRow[2],currentCol[2], direction);
-                                break;
-                            case 3:
-                                result=pawnP4.move(graph, 3,currentRow[3],currentCol[3], direction);
-                                break;
-                        }
-                        if (result==0) {
-                            moveToken(currentPlayer, direction[0], direction[1], tokens);
-                        }
-
-                        break;
-                    default:
-                        Platform.exit();
-                        System.exit(0);
-                }
-                if (numPlayers==4) {
-                    if (pawnP1.hasWon()==true || pawnP2.hasWon()==true || pawnP3.hasWon()==true || pawnP4.hasWon()==true) {
-                        end();
+            KeyCode keyCode = event.getCode();
+            int result=-1;
+            switch (keyCode) {
+                case UP:
+                    switch (currentPlayer) {
+		            case 0: //use the move function to move the pawn on the class and on the game board
+		            	result=pawnP1.move(graph, 1, currentRow[0],currentCol[0],direction);//if the function return 0, move on the same direction.
+		            	break;
+		            case 1:
+		            	result=pawnP2.move(graph, 1, currentRow[1],currentCol[1],direction);
+		            	break;
+		            case 2:
+		            	result=pawnP3.move(graph, 1,currentRow[2],currentCol[2], direction);
+		            	break;
+		            case 3:
+		            	result=pawnP4.move(graph, 1,currentRow[3],currentCol[3], direction);
+		            	break;
+		            }
+                    //else: move following a diagonal
+                    if (result==0) {
+                    	moveToken(currentPlayer, direction[0], direction[1], tokens);
                     }
-                }
-                else if (numPlayers==2) {
-                    if (pawnP1.hasWon()==true || pawnP2.hasWon()==true) {
-                        end();
+                    break;
+                case DOWN:
+                    //Same process for each direction
+                    switch (currentPlayer) {
+		            case 0:
+		            	result=pawnP1.move(graph, 4,currentRow[0],currentCol[0], direction);
+		            	break;
+		            case 1:
+		            	result=pawnP2.move(graph, 4,currentRow[1],currentCol[1], direction);
+		            	break;
+		            case 2:
+		            	result=pawnP3.move(graph, 4,currentRow[2],currentCol[2], direction);
+		            	break;
+		            case 3:
+		            	result=pawnP4.move(graph, 4,currentRow[3],currentCol[3], direction);
+		            	break;
+		            }
+                    
+                    if (result==0) {
+                    	moveToken(currentPlayer, direction[0], direction[1], tokens);
                     }
+                    
+                    break;
+                case LEFT:
+                    //Same process
+		            switch (currentPlayer) {
+		            case 0:
+		            	result=pawnP1.move(graph, 2,currentRow[0],currentCol[0], direction);
+		            	break;
+		            case 1:
+		            	result=pawnP2.move(graph, 2,currentRow[1],currentCol[1], direction);
+		            	break;
+		            case 2:
+		            	result=pawnP3.move(graph, 2,currentRow[2],currentCol[2], direction);
+		            	break;
+		            case 3:
+		            	result=pawnP4.move(graph, 2,currentRow[3],currentCol[3], direction);
+		            	break;
+		            }
+		            if (result==0) {
+		            	moveToken(currentPlayer, direction[0], direction[1], tokens);
+		            }
+		            
+                    break;
+                case RIGHT:
+                    //Same process
+                    switch (currentPlayer) {
+		            case 0:
+		            	result=pawnP1.move(graph, 3,currentRow[0],currentCol[0], direction);
+		            	break;
+		            case 1:
+		            	result=pawnP2.move(graph, 3,currentRow[1],currentCol[1], direction);
+		            	break;
+		            case 2:
+		            	result=pawnP3.move(graph, 3,currentRow[2],currentCol[2], direction);
+		            	break;
+		            case 3:
+		            	result=pawnP4.move(graph, 3,currentRow[3],currentCol[3], direction);
+		            	break;
+		            }
+                    if (result==0) {
+                    	moveToken(currentPlayer, direction[0], direction[1], tokens);
+                    }
+                    
+                    break;
+                default:
+                	Platform.exit();
+                    System.exit(0);
+            }
+            if (numPlayers==4) {
+            	if (pawnP1.hasWon()==true || pawnP2.hasWon()==true || pawnP3.hasWon()==true || pawnP4.hasWon()==true) {
+                	end();
                 }
             }
-
+            else if (numPlayers==2) {
+            	if (pawnP1.hasWon()==true || pawnP2.hasWon()==true) {
+                	end();
+                }
+            }
         });
-
-
-        Scene scene = new Scene(vbox);
+        
+        Scene scene = new Scene(stackPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("CY-PATH");
         primaryStage.setResizable(false);
         primaryStage.show();
-
+        
         gridPane.requestFocus();
     }
     /**
@@ -420,7 +389,7 @@ public class QuoridorFX extends Application implements Serializable {
         launch(args);
     }
     /**
-     * This methode lets the players chose how many they are, either 2 or 4 or you can load the last game you saved.
+     * This methode lets the players chose how many they are, either 2 or 4.
      * @return the number selected
      */
     private int askNumberOfPlayers() {
@@ -431,25 +400,19 @@ public class QuoridorFX extends Application implements Serializable {
 
         ButtonType twoPlayersButton = new ButtonType("2 players");
         ButtonType fourPlayersButton = new ButtonType("4 players");
-        ButtonType loadButton = new ButtonType("Load game");
         ButtonType cancelButton = new ButtonType("Quit game");
 
-        alert.getButtonTypes().setAll(twoPlayersButton, fourPlayersButton,loadButton, cancelButton);
+        alert.getButtonTypes().setAll(twoPlayersButton, fourPlayersButton, cancelButton);
 
         while (true) {
             alert.showAndWait();
             ButtonType selectedButton = alert.getResult();
             if (selectedButton == twoPlayersButton) {
-            	writeFile("walls",0);
+            	writeFile(0);
             	return 2;
             } else if (selectedButton == fourPlayersButton) {
-                writeFile("walls", 0);
-                return 4;
-            } else if (selectedButton == loadButton) {
-            /*    Scene scene = new Scene(Deserialize.deserialize());
-
-                writeFile(0);
-                return 2;*/
+            	writeFile(0);
+            	return 4;
             } else if (selectedButton == cancelButton) {
             	Platform.exit();
                 System.exit(0);
@@ -510,12 +473,10 @@ public class QuoridorFX extends Application implements Serializable {
 		
 		//System.out.println("Suppression entre "+x1+" : "+y1+" et :"+x2+" : "+y2);
 		Barrier.removeEdge(graph, getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
-        //int[] tempList= [x1,y1,x2,y2];
-//        wallsList.add(tempList);
 		//graph.printGraph();
 		for (int i=0; i<pawnlist.size(); i++) {
 			Pawn currentPawn=pawnlist.get(i);
-			if (currentPawn.checkWall(graph, currentPawn.goal)==false || readFile("walls") >=40) { //check with the checkWall() method
+			if (currentPawn.checkWall(graph, currentPawn.goal)==false || readFile() >=20) { //check with the checkWall() method
 				error();
 				//graph.printGraph();
 				graph.addEdge(getNodeAt(graph,x1,y1),getNodeAt(graph,x2,y2));
@@ -534,16 +495,14 @@ public class QuoridorFX extends Application implements Serializable {
         horizontalLine.setStrokeWidth(4);
         horizontalLine.setOnMouseClicked(event -> {
             //System.out.println(col+" : "+(8-row));
-            if (horizontalBarriers[row][col]==false && readFile("walls")%2==0 || horizontalBarriers[row][col]==false && readFile("row")==row && readFile("col")==col+1|| horizontalBarriers[row][col]==false && readFile("row")==row && readFile("col")==col-1) {
-                if(createWall(graph, col, 8-row, col, 8-row-1, pawnlist)==0) {
-                    horizontalBarriers[row][col] = true;
-                    writeFile("walls", readFile("walls")+1);
-                    writeFile("row",row);
-                    writeFile("col",col);
+            if (horizontalBarriers[row][col]==false) {
+            	if(createWall(graph, col, 8-row, col, 8-row-1, pawnlist)==0) {
+            		horizontalBarriers[row][col] = true;
+            		writeFile(readFile()+1);
                     horizontalLine.setStroke(horizontalBarriers[row][col] ? Color.RED : Color.BLACK);
-                }
+            	}
             }
-
+        	
         });
         return horizontalLine;
     }
@@ -556,17 +515,15 @@ public class QuoridorFX extends Application implements Serializable {
         verticalLine.setStroke(verticalBarriers[row][col] ? Color.RED : Color.BLACK);
         verticalLine.setStrokeWidth(4);
         verticalLine.setOnMouseClicked(event -> {
-            //System.out.println(col+" : "+(8-row));
-            if (verticalBarriers[row][col]==false && readFile("walls")%2==0 || verticalBarriers[row][col]==false && readFile("row")==row+1 && readFile("col")==col|| verticalBarriers[row][col]==false && readFile("row")==row-1 && readFile("col")==col) {
-                if (createWall(graph, col, 8-row, col+1, 8-row, pawnlist)==0) {
-                    verticalBarriers[row][col] = true;
-                    writeFile("walls",readFile("walls")+1);
-                    writeFile("row",row);
-                    writeFile("col",col);
+        	//System.out.println(col+" : "+(8-row));
+        	if (verticalBarriers[row][col]==false) {
+        		if (createWall(graph, col, 8-row, col+1, 8-row, pawnlist)==0) {
+        			verticalBarriers[row][col] = true;
+        			writeFile(readFile()+1);
                     verticalLine.setStroke(verticalBarriers[row][col] ? Color.RED : Color.BLACK);
-                }
-            }
-
+        		}
+        	}
+            
         });
         return verticalLine;
     }
@@ -574,15 +531,15 @@ public class QuoridorFX extends Application implements Serializable {
     /**
      * This method write an integer value in a file
      */
-    private static void writeFile(String file, int content) {
+    private static void writeFile(int content) {
         try {
-            File fichier = new File(file+".txt");
+            File fichier = new File("walls.txt");
 
             FileOutputStream fileOutputStream = new FileOutputStream(fichier);
 
             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
 
-
+            
             dataOutputStream.writeInt(content);
 
             dataOutputStream.close();
@@ -595,25 +552,24 @@ public class QuoridorFX extends Application implements Serializable {
     /**
      * This method reads an integer value in a file
      */
-    private static int readFile(String file) {
-        try {
-
-            File fichier = new File(file+".txt");
+    private static int readFile() {
+    	try {
+            
+            File fichier = new File("walls.txt");
 
             FileInputStream fileInputStream = new FileInputStream(fichier);
             DataInputStream dataInputStream = new DataInputStream(fileInputStream);
             int nbWalls = dataInputStream.readInt();
             dataInputStream.close();
             fileInputStream.close();
-
+            
             return nbWalls;
         } catch (IOException e) {
             e.printStackTrace();
             return -1;
         }
     }
-
-
+    
     protected static void error() {
     	errorWindow win = new errorWindow();
     	Stage primaryStage = new Stage();
