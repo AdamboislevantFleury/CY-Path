@@ -10,7 +10,12 @@ Done by group 15.
 
 - 2 or 4 players
 - Clickable placement of barriers
-- Possibility to go diagonally in case of a barrier right in front of the pawn and anoter pawn right behind it.
+- Movable pawn using keyboard : 
+    + right : →  
+    + left : ← 
+    + up : ↑ 
+    + down : ↓
+- Possibility to go diagonally in case of a barrier right in front of the pawn and anoter pawn right behind it. To trigger this functionnality you must be in this precise situation and click on the right or left arrow of your keyboard, a pop up message will then ask you if you want to go diagonally and if yes at the right diagonal or left diagonal. 
 
 # How to play
 
