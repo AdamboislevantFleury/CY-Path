@@ -19,7 +19,7 @@ Each player can choose to either move its pawn or place a barrier.
 
 The player can move its pawn on the left, right, top or bottom, using the arrow on the keyboard.
 
-If the player chooses to place a barrier, they only have to click on the space between 2 tiles to place a barrier.
+If the player chooses to place a barrier, they have to click twice on the space between 2 tiles and on the space right next to the barrier they just placed. To make sure the barrier blocks 2 tiles the player have to place the 2 barriers either vertically or horizontally, they can't form an angle or just place 2 barriers that are not next to each other.
 
 In case of a barrier in front of the pawn and another pawn behing it, a message is displayed asking where to go diagonally. The user can also choose to go left or right if possible.
 
