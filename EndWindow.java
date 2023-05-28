@@ -23,24 +23,25 @@ public class EndWindow extends Application {
     @Override
     /**
      * Display end game message to the user.
+     *
      */
     public void start(Stage primaryStage) {
-        // Creation du texte
-        Label label = new Label("La Partie est terminee!");
+        // text creation
+        Label label = new Label("Game finished");
 
-        // Creation du bouton
-        Button closeButton = new Button("Fermer le programme");
+        // Button creation
+        Button closeButton = new Button("Close page");
         closeButton.setOnAction(e -> System.exit(0)); // Ferme le programme lorsqu'on clique sur le bouton
 
-        // Creation du layout
+        // Layout creation
         VBox layout = new VBox(10);
         layout.getChildren().addAll(label, closeButton);
         layout.setAlignment(Pos.CENTER);
 
-        // Creation de la scene
+        // Scene creation
         Scene scene = new Scene(layout, 300, 200);
 
-        // Configuration de la fenetre principale
+        // Main page configuration
         primaryStage.setTitle("End");
         primaryStage.setScene(scene);
         primaryStage.show();
